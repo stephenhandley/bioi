@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Sequence.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="Bioi.html">
+                Bioi.coffee
+              </a>
+            
+              
+              <a class="source" href="Dna.html">
+                Dna.coffee
+              </a>
+            
+              
+              <a class="source" href="Protein.html">
+                Protein.coffee
+              </a>
+            
+              
+              <a class="source" href="Sequence.html">
+                Sequence.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>Sequence.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sequence</span></span>
+  constructor : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-string">'sequence'</span> <span class="hljs-keyword">of</span> args)
+      <span class="hljs-property">@sequence</span> = args.sequence.trim().toUpperCase()
+
+    <span class="hljs-property">@meta</span> = <span class="hljs-keyword">if</span> (<span class="hljs-string">'meta'</span> <span class="hljs-keyword">of</span> args)
+      args.meta
+    <span class="hljs-keyword">else</span>
+      {}
+
+  count : <span class="hljs-function"><span class="hljs-params">(mer)</span>-&gt;</span>
+    count = <span class="hljs-number">0</span>
+
+    seqlen = <span class="hljs-property">@sequence</span>.length
+    merlen = mer.length
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> .. (seqlen - merlen)]
+      subseq = <span class="hljs-property">@sequence</span>[i .. (i + merlen - <span class="hljs-number">1</span>)]
+      <span class="hljs-keyword">if</span> (subseq <span class="hljs-keyword">is</span> mer)
+        count++
+
+    count
+
+  counts : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
+    alphabet = <span class="hljs-property">@constructor</span>.alphabet
+
+    result = {}
+    <span class="hljs-keyword">for</span> base <span class="hljs-keyword">in</span> alphabet
+      result[base] = <span class="hljs-number">0</span>
+
+    <span class="hljs-keyword">for</span> base <span class="hljs-keyword">in</span> <span class="hljs-property">@sequence</span>
+      <span class="hljs-keyword">if</span> (base <span class="hljs-keyword">in</span> alphabet)
+        result[base] += <span class="hljs-number">1</span>
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">"DNA: Invalid base: <span class="hljs-subst">#{base}</span>"</span>)
+
+    result
+
+  kMers : <span class="hljs-function"><span class="hljs-params">(k)</span>-&gt;</span>
+    counts = {}
+    seqlen = <span class="hljs-property">@sequence</span>.length
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> .. (seqlen - k)]
+      mer = <span class="hljs-property">@sequence</span>[i .. (i + k - <span class="hljs-number">1</span>)]
+      <span class="hljs-keyword">unless</span> mer <span class="hljs-keyword">of</span> counts
+        counts[mer] = <span class="hljs-number">0</span>
+      counts[mer] += <span class="hljs-number">1</span>
+
+    max = [{count : <span class="hljs-number">0</span>}]
+    <span class="hljs-keyword">for</span> mer, count <span class="hljs-keyword">of</span> counts
+      current_max = max[<span class="hljs-number">0</span>].count
+      pair = {mer : mer , count : count}
+
+      <span class="hljs-keyword">if</span> (count &gt; current_max)
+        max = [pair]
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (count == current_max)
+        max.push(pair)
+
+    pair.mer <span class="hljs-keyword">for</span> pair <span class="hljs-keyword">in</span> max
+
+<span class="hljs-built_in">module</span>.exports = Sequence</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

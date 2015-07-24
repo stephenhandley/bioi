@@ -1,0 +1,28 @@
+{
+  "name": "bioi",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "license": "substanceware",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --recursive --no-timeouts --compilers coffee:coffee-script/register --ui exports ./test"
+  },
+  "author": {
+    "name": "Stephen Handley",
+    "email": "stephen.handley@gmail.com",
+    "url": "http://person.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stephenhandley/bioi.git"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.9.3",
+    "docco": "^0.7.0",
+    "grunt": "^0.4.5",
+    "grunt-contrib-coffee": "^0.13.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-docco": "^0.3.3",
+    "mocha": "^2.2.5"
+  }
+}
