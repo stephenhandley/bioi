@@ -10,9 +10,10 @@ class Codon extends Sequence
   }
   @forAminoAcid: (symbol)->
     if (symbol.length > 1)
-      symbol = Protein.letterFor(symbol)
+      symbol = AminoAcid.letterFor(symbol)
     @map[symbol]
 ```
+- use mixins to share stuff between Codon, Rna and Peptide, Protein etc. 
 - how to represent structures... at least one representation is bond graph 
 
 # understanding crispr
