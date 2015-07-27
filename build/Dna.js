@@ -12,10 +12,32 @@
       return Dna.__super__.constructor.apply(this, arguments);
     }
 
-    Dna.letters = ['A', 'C', 'T', 'G'];
+    Dna.letters = ['A', 'C', 'G', 'T'];
+
+    Dna.complement_map = {
+      A: 'T',
+      C: 'G',
+      G: 'C',
+      T: 'A'
+    };
 
     Dna.prototype.locateOriC = function() {
       return console.log('unimplemented');
+    };
+
+    Dna.prototype.complement = function() {
+      var letter, map;
+      map = this.constructor.complement_map;
+      return ((function() {
+        var i, len, ref, results;
+        ref = this.sequence;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          letter = ref[i];
+          results.push(map[letter]);
+        }
+        return results;
+      }).call(this)).join('');
     };
 
     return Dna;

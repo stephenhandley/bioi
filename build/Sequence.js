@@ -13,16 +13,16 @@
     }
 
     Sequence.prototype.letterCounts = function() {
-      var j, l, len, len1, letter, letters, ref, result;
+      var i, j, len, len1, letter, letters, ref, result;
       letters = this.constructor.letters;
       result = {};
-      for (j = 0, len = letters.length; j < len; j++) {
-        letter = letters[j];
+      for (i = 0, len = letters.length; i < len; i++) {
+        letter = letters[i];
         result[letter] = 0;
       }
       ref = this.sequence;
-      for (l = 0, len1 = ref.length; l < len1; l++) {
-        letter = ref[l];
+      for (j = 0, len1 = ref.length; j < len1; j++) {
+        letter = ref[j];
         if ((indexOf.call(letters, letter) >= 0)) {
           result[letter] += 1;
         } else {
@@ -33,12 +33,12 @@
     };
 
     Sequence.prototype.merCount = function(mer) {
-      var count, end, j, last_start, mer_length, ref, seq_length, start, subseq;
+      var count, end, i, last_start, mer_length, ref, seq_length, start, subseq;
       count = 0;
       seq_length = this.sequence.length;
       mer_length = mer.length;
       last_start = seq_length - mer_length;
-      for (start = j = 0, ref = last_start; 0 <= ref ? j <= ref : j >= ref; start = 0 <= ref ? ++j : --j) {
+      for (start = i = 0, ref = last_start; 0 <= ref ? i <= ref : i >= ref; start = 0 <= ref ? ++i : --i) {
         end = start + mer_length - 1;
         subseq = this.sequence.slice(start, +end + 1 || 9e9);
         if (subseq === mer) {
@@ -48,53 +48,56 @@
       return count;
     };
 
-    Sequence.prototype.kMers = function(k) {
-      var count, counts, current_max, i, j, l, len, max, mer, pair, ref, results, seqlen;
+    Sequence.prototype.kMers = function(args) {
+      var count, counts, end, i, k, last_start, max, mer, ref, result, seq_length, start;
+      k = args.k;
       counts = {};
-      seqlen = this.sequence.length;
-      for (i = j = 0, ref = seqlen - k; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-        mer = this.sequence.slice(i, +(i + k - 1) + 1 || 9e9);
+      seq_length = this.sequence.length;
+      last_start = seq_length - k;
+      for (start = i = 0, ref = last_start; 0 <= ref ? i <= ref : i >= ref; start = 0 <= ref ? ++i : --i) {
+        end = start + k;
+        mer = this.sequence.slice(start, end);
         if (!(mer in counts)) {
           counts[mer] = 0;
         }
         counts[mer] += 1;
       }
-      max = [
-        {
-          count: 0
-        }
-      ];
+      result = {
+        max: {
+          count: 0,
+          mers: []
+        },
+        all: {}
+      };
       for (mer in counts) {
         count = counts[mer];
-        current_max = max[0].count;
-        pair = {
-          mer: mer,
-          count: count
-        };
-        if (count > current_max) {
-          max = [pair];
-        } else if (count === current_max) {
-          max.push(pair);
+        if (count > 0) {
+          result.all[mer] = count;
+        }
+        max = result.max.count;
+        if (count > max) {
+          result.max = {
+            count: count,
+            mers: [mer]
+          };
+        } else if (count === max) {
+          result.max.mers.push(mer);
         }
       }
-      results = [];
-      for (l = 0, len = max.length; l < len; l++) {
-        pair = max[l];
-        results.push(pair.mer);
-      }
-      return results;
+      return result;
     };
 
-    Sequence.prototype.group = function(dims) {
-      var combine, depth, result;
+    Sequence.prototype.group = function(args) {
+      var combine, depth, dims, result;
+      dims = args.dims;
       combine = function(args) {
-        var atom, depth, group, groups, input, j, len, size;
+        var atom, depth, group, groups, i, input, len, size;
         depth = args.depth, input = args.input;
         size = dims[depth];
         groups = [];
         group = [];
-        for (j = 0, len = input.length; j < len; j++) {
-          atom = input[j];
+        for (i = 0, len = input.length; i < len; i++) {
+          atom = input[i];
           group.push(atom);
           if (group.length === size) {
             groups.push(group);
@@ -115,9 +118,11 @@
       return result;
     };
 
-    Sequence.prototype.print = function(options) {
+    Sequence.prototype.print = function(args) {
       var lines;
-      lines = this.group([8, 8]);
+      lines = this.group({
+        dims: [8, 8]
+      });
       return lines.map(function(line) {
         return line.map(function(group) {
           return group.join('');

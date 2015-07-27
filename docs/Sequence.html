@@ -104,31 +104,45 @@
 
     count
 
+  kMers : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    {k} = args
+    counts     = {}
+    seq_length = <span class="hljs-property">@sequence</span>.length
+    last_start = seq_length - k
 
-  kMers : <span class="hljs-function"><span class="hljs-params">(k)</span>-&gt;</span>
-    counts = {}
-    seqlen = <span class="hljs-property">@sequence</span>.length
-
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> .. (seqlen - k)]
-      mer = <span class="hljs-property">@sequence</span>[i .. (i + k - <span class="hljs-number">1</span>)]
+    <span class="hljs-keyword">for</span> start <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> .. last_start]
+      end = start + k
+      mer = <span class="hljs-property">@sequence</span>[start ... end]
       <span class="hljs-keyword">unless</span> mer <span class="hljs-keyword">of</span> counts
         counts[mer] = <span class="hljs-number">0</span>
       counts[mer] += <span class="hljs-number">1</span>
 
-    max = [{count : <span class="hljs-number">0</span>}]
+    result = {
+      max : {      <span class="hljs-comment"># most frequently occurring mers</span>
+        count : <span class="hljs-number">0</span>
+        mers  : []
+      }
+      all : {}     <span class="hljs-comment"># counts keyed by mer</span>
+    }
+
     <span class="hljs-keyword">for</span> mer, count <span class="hljs-keyword">of</span> counts
-      current_max = max[<span class="hljs-number">0</span>].count
-      pair = {mer : mer , count : count}
+      <span class="hljs-keyword">if</span> (count &gt; <span class="hljs-number">0</span>)
+        result.all[mer] = count
 
-      <span class="hljs-keyword">if</span> (count &gt; current_max)
-        max = [pair]
-      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (count == current_max)
-        max.push(pair)
+      max = result.max.count
 
-    pair.mer <span class="hljs-keyword">for</span> pair <span class="hljs-keyword">in</span> max
+      <span class="hljs-keyword">if</span> (count &gt; max)
+        result.max = {
+          count : count
+          mers  : [mer]
+        }
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (count <span class="hljs-keyword">is</span> max)
+        result.max.mers.push(mer)
 
+    result
 
-  group : <span class="hljs-function"><span class="hljs-params">(dims)</span>-&gt;</span>
+  group : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    {dims} = args
 <span class="hljs-function">    <span class="hljs-title">combine</span> = <span class="hljs-params">(args)</span>-&gt;</span>
       {depth, input} = args
 
@@ -158,8 +172,8 @@
 
     result
 
-  <span class="hljs-built_in">print</span> : <span class="hljs-function"><span class="hljs-params">(options)</span>-&gt;</span>
-    lines = <span class="hljs-property">@group</span>([<span class="hljs-number">8</span>, <span class="hljs-number">8</span>])
+  <span class="hljs-built_in">print</span> : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    lines = <span class="hljs-property">@group</span>(<span class="hljs-attribute">dims</span>: [<span class="hljs-number">8</span>, <span class="hljs-number">8</span>])
     lines.map(<span class="hljs-function"><span class="hljs-params">(line)</span>-&gt;</span>
       line.map(<span class="hljs-function"><span class="hljs-params">(group)</span>-&gt;</span>
         group.join(<span class="hljs-string">''</span>)

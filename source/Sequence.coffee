@@ -41,31 +41,45 @@ class Sequence
 
     count
 
+  kMers : (args)->
+    {k} = args
+    counts     = {}
+    seq_length = @sequence.length
+    last_start = seq_length - k
 
-  kMers : (k)->
-    counts = {}
-    seqlen = @sequence.length
-
-    for i in [0 .. (seqlen - k)]
-      mer = @sequence[i .. (i + k - 1)]
+    for start in [0 .. last_start]
+      end = start + k
+      mer = @sequence[start ... end]
       unless mer of counts
         counts[mer] = 0
       counts[mer] += 1
 
-    max = [{count : 0}]
+    result = {
+      max : {      # most frequently occurring mers
+        count : 0
+        mers  : []
+      }
+      all : {}     # counts keyed by mer
+    }
+
     for mer, count of counts
-      current_max = max[0].count
-      pair = {mer : mer , count : count}
+      if (count > 0)
+        result.all[mer] = count
 
-      if (count > current_max)
-        max = [pair]
-      else if (count == current_max)
-        max.push(pair)
+      max = result.max.count
 
-    pair.mer for pair in max
+      if (count > max)
+        result.max = {
+          count : count
+          mers  : [mer]
+        }
+      else if (count is max)
+        result.max.mers.push(mer)
 
+    result
 
-  group : (dims)->
+  group : (args)->
+    {dims} = args
     combine = (args)->
       {depth, input} = args
 
@@ -95,8 +109,8 @@ class Sequence
 
     result
 
-  print : (options)->
-    lines = @group([8, 8])
+  print : (args)->
+    lines = @group(dims: [8, 8])
     lines.map((line)->
       line.map((group)->
         group.join('')

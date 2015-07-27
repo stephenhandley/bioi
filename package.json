@@ -1,11 +1,11 @@
 {
   "name": "bioi",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
   "license": "substanceware",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --recursive --no-timeouts --compilers coffee:coffee-script/register --ui exports ./test"
+    "test": "./node_modules/.bin/mocha --recursive --no-timeouts --compilers coffee:coffee-script/register --ui exports ./tests/run"
   },
   "author": {
     "name": "Stephen Handley",
