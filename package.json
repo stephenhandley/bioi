@@ -1,6 +1,6 @@
 {
   "name": "bioi",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "license": "substanceware",
@@ -24,5 +24,8 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-docco": "^0.3.3",
     "mocha": "^2.2.5"
+  },
+  "dependencies": {
+    "extend": "^3.0.0"
   }
 }

@@ -13,8 +13,13 @@ class Codon extends Sequence
       symbol = AminoAcid.letterFor(symbol)
     @map[symbol]
 ```
-- use mixins to share stuff between Codon, Rna and Peptide, Protein etc. 
-- how to represent structures... at least one representation is bond graph 
+- use mixins to share stuff between Codon, Rna and Peptide, Protein etc.
+- how to represent structures... at least one representation is bond graph
+
+# bioinformatics.org
+- maybe some useful stuff here but code is a mess
+- http://www.bioinformatics.org/sms2/scripts/sms_common.js
+
 
 # understanding crispr
 - https://en.wikipedia.org/wiki/CRISPR

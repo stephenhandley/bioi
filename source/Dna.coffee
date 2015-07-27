@@ -1,7 +1,7 @@
 Sequence = require('./Sequence')
 
 class Dna extends Sequence
-  @alphabet = ['A', 'C', 'T', 'G']
+  @letters = ['A', 'C', 'T', 'G']
 
   # replication origin
   locateOriC : ()->

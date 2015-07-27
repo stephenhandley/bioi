@@ -12,7 +12,7 @@
       return Dna.__super__.constructor.apply(this, arguments);
     }
 
-    Dna.alphabet = ['A', 'C', 'T', 'G'];
+    Dna.letters = ['A', 'C', 'T', 'G'];
 
     Dna.prototype.locateOriC = function() {
       return console.log('unimplemented');

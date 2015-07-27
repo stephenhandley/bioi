@@ -61,43 +61,49 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sequence</span></span>
+            <div class="content"><div class='highlight'><pre>Extend = <span class="hljs-built_in">require</span>(<span class="hljs-string">'extend'</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sequence</span></span>
   constructor : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
     <span class="hljs-keyword">if</span> (<span class="hljs-string">'sequence'</span> <span class="hljs-keyword">of</span> args)
-      <span class="hljs-property">@sequence</span> = args.sequence.trim().toUpperCase()
+      <span class="hljs-property">@sequence</span> = args.sequence.replace(<span class="hljs-regexp">/\s+/g</span>,<span class="hljs-string">''</span>).toUpperCase()
 
     <span class="hljs-property">@meta</span> = <span class="hljs-keyword">if</span> (<span class="hljs-string">'meta'</span> <span class="hljs-keyword">of</span> args)
       args.meta
     <span class="hljs-keyword">else</span>
       {}
 
-  count : <span class="hljs-function"><span class="hljs-params">(mer)</span>-&gt;</span>
-    count = <span class="hljs-number">0</span>
 
-    seqlen = <span class="hljs-property">@sequence</span>.length
-    merlen = mer.length
+  letterCounts : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
+    letters = <span class="hljs-property">@constructor</span>.letters
 
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> .. (seqlen - merlen)]
-      subseq = <span class="hljs-property">@sequence</span>[i .. (i + merlen - <span class="hljs-number">1</span>)]
+    result = {}
+    <span class="hljs-keyword">for</span> letter <span class="hljs-keyword">in</span> letters
+      result[letter] = <span class="hljs-number">0</span>
+
+    <span class="hljs-keyword">for</span> letter <span class="hljs-keyword">in</span> <span class="hljs-property">@sequence</span>
+      <span class="hljs-keyword">if</span> (letter <span class="hljs-keyword">in</span> letters)
+        result[letter] += <span class="hljs-number">1</span>
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@constructor</span>.name}</span>: invalid letter `<span class="hljs-subst">#{letter}</span>`"</span>)
+
+    result
+
+
+  merCount : <span class="hljs-function"><span class="hljs-params">(mer)</span>-&gt;</span>
+    count      = <span class="hljs-number">0</span>
+    seq_length = <span class="hljs-property">@sequence</span>.length
+    mer_length = mer.length
+    last_start = seq_length - mer_length
+
+    <span class="hljs-keyword">for</span> start <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> .. last_start]
+      end = start + mer_length - <span class="hljs-number">1</span>
+      subseq = <span class="hljs-property">@sequence</span>[start .. end]
       <span class="hljs-keyword">if</span> (subseq <span class="hljs-keyword">is</span> mer)
         count++
 
     count
 
-  counts : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
-    alphabet = <span class="hljs-property">@constructor</span>.alphabet
-
-    result = {}
-    <span class="hljs-keyword">for</span> base <span class="hljs-keyword">in</span> alphabet
-      result[base] = <span class="hljs-number">0</span>
-
-    <span class="hljs-keyword">for</span> base <span class="hljs-keyword">in</span> <span class="hljs-property">@sequence</span>
-      <span class="hljs-keyword">if</span> (base <span class="hljs-keyword">in</span> alphabet)
-        result[base] += <span class="hljs-number">1</span>
-      <span class="hljs-keyword">else</span>
-        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">"DNA: Invalid base: <span class="hljs-subst">#{base}</span>"</span>)
-
-    result
 
   kMers : <span class="hljs-function"><span class="hljs-params">(k)</span>-&gt;</span>
     counts = {}
@@ -120,6 +126,51 @@
         max.push(pair)
 
     pair.mer <span class="hljs-keyword">for</span> pair <span class="hljs-keyword">in</span> max
+
+
+  group : <span class="hljs-function"><span class="hljs-params">(dims)</span>-&gt;</span>
+<span class="hljs-function">    <span class="hljs-title">combine</span> = <span class="hljs-params">(args)</span>-&gt;</span>
+      {depth, input} = args
+
+      size = dims[depth]
+
+      groups = []
+      group  = []
+
+      <span class="hljs-keyword">for</span> atom <span class="hljs-keyword">in</span> input
+        group.push(atom)
+
+        <span class="hljs-keyword">if</span> (group.length <span class="hljs-keyword">is</span> size)
+          groups.push(group)
+          group = []
+
+      groups
+
+    result = <span class="hljs-property">@sequence</span>
+    depth  = dims.length - <span class="hljs-number">1</span>
+
+    <span class="hljs-keyword">while</span> (depth &gt;= <span class="hljs-number">0</span>)
+      result = combine(
+        depth : depth
+        input : result
+      )
+      depth = depth - <span class="hljs-number">1</span>
+
+    result
+
+  <span class="hljs-built_in">print</span> : <span class="hljs-function"><span class="hljs-params">(options)</span>-&gt;</span>
+    lines = <span class="hljs-property">@group</span>([<span class="hljs-number">8</span>, <span class="hljs-number">8</span>])
+    lines.map(<span class="hljs-function"><span class="hljs-params">(line)</span>-&gt;</span>
+      line.map(<span class="hljs-function"><span class="hljs-params">(group)</span>-&gt;</span>
+        group.join(<span class="hljs-string">''</span>)
+      ).join(<span class="hljs-string">' '</span>)
+    ).join(<span class="hljs-string">'\n'</span>)
+
+
+
+
+
+
 
 <span class="hljs-built_in">module</span>.exports = Sequence</pre></div></div>
             
