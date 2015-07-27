@@ -26,18 +26,15 @@
     };
 
     Dna.prototype.complement = function() {
-      var letter, map;
+      var end, i, j, letter, map, ref, result;
       map = this.constructor.complement_map;
-      return ((function() {
-        var i, len, ref, results;
-        ref = this.sequence;
-        results = [];
-        for (i = 0, len = ref.length; i < len; i++) {
-          letter = ref[i];
-          results.push(map[letter]);
-        }
-        return results;
-      }).call(this)).join('');
+      result = '';
+      end = this.sequence.length - 1;
+      for (i = j = ref = end; ref <= 0 ? j <= 0 : j >= 0; i = ref <= 0 ? ++j : --j) {
+        letter = this.sequence[i];
+        result += map[letter];
+      }
+      return result;
     };
 
     return Dna;

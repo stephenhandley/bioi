@@ -16,6 +16,13 @@ class Dna extends Sequence
 
   complement : ()->
     map = @constructor.complement_map
-    (map[letter] for letter in @sequence).join('')
+    result = ''
+    end = @sequence.length - 1
+
+    for i in [end .. 0]
+      letter = @sequence[i]
+      result += map[letter]
+
+    result
 
 module.exports = Dna

@@ -8,9 +8,10 @@ module.exports = {
       'should complement': ()->
         inputs = {
           'AAAA'               : 'TTTT'
-          'ACGT'               : 'TGCA'
-          'ACTGATCGATTCAGTCAG' : 'TGACTAGCTAAGTCAGTC'
-          'TTGTGTC'            : 'AACACAG'
+          'ACGT'               : 'ACGT'
+          'ACTGATCGATTCAGTCAG' : 'CTGACTGAATCGATCAGT'
+          'TTGTGTC'            : 'GACACAA'
+          'AGTCGCATAGT'        : 'ACTATGCGACT'
         }
 
         for sequence, complement of inputs
