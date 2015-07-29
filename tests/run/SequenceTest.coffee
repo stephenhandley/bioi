@@ -1,7 +1,7 @@
 Assert = require('assert')
 
 Bioi = require('../../')
-vibrioCholeraeOriC = require('../data/vibrioCholeraeOriC')
+VibrioCholerae = require('../data/VibrioCholerae')
 
 _construct = (test)->
   new test.Type(sequence : test.sequence)
@@ -15,33 +15,117 @@ module.exports = {
         Assert.equal(sequence, dna.sequence)
     }
 
-    'merCount': {
-      'should return count of mer': ()->
+    'mer': {
+      'should return count and positions of mer': ()->
         tests = [
           {
             Type     : Bioi.Dna
             sequence : 'ACAACTATGCATACTATCGGGAACTATCCT'
             mer      : 'ACTAT'
-            count    : 3
+            result   : {
+              count     : 3,
+              positions : [ 3, 12, 22 ]
+            }
           }
           {
             Type     : Bioi.Dna
             sequence : 'CGATATATCCATAG'
             mer      : 'ATA'
-            count    : 3
+            result   : {
+              count     : 3,
+              positions : [ 2, 4, 10 ]
+            }
           }
           {
             Type     : Bioi.Dna
             sequence : 'ACTGTACGATGATGTGTGTCAAAG'
             mer      : 'TGT'
-            count    : 4
+            result   : {
+              count     : 4,
+              positions : [ 2, 12, 14, 16 ]
+            }
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'GCGCG'
+            mer      : 'GCG'
+            result   : {
+              count     : 2,
+              positions : [ 0, 2 ]
+            }
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'ACGTACGTACGT'
+            mer      : 'CG'
+            result   : {
+              count     : 3,
+              positions : [ 1, 5, 9 ]
+            }
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'AAAGAGTGTCTGATAGCAGCTTCTGAACTGGTTACCTGCCGTGAGTAAATTAAATTTTATTGACTTAGGTCACTAAATACTTTAACCAATATAGGCATAGCGCACAGACAGATAATAATTACAGAGTACACAACATCCAT'
+            mer      : 'AAA'
+            result   : {
+              count     : 4,
+              positions : [ 0, 46, 51, 74 ]
+            }
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'AGCGTGCCGAAATATGCCGCCAGACCTGCTGCGGTGGCCTCGCCGACTTCACGGATGCCAAGTGCATAGAGGAAGCGAGCAAAGGTGGTTTCTTTCGCTTTATCCAGCGCGTTAACCACGTTCTGTGCCGACTTT'
+            mer      : 'TTT'
+            result   : {
+              count     : 4,
+              positions : [ 88, 92, 98, 132 ]
+            }
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'GGACTTACTGACGTACG'
+            mer      : 'ACT'
+            result   : {
+              count     : 2,
+              positions : [ 2, 6 ]
+            }
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'ATCCGATCCCATGCCCATG'
+            mer      : 'CC'
+            result   : {
+              count     : 5,
+              positions : [ 2, 7, 8, 13, 14 ]
+            }
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'CTGTTTTTGATCCATGATATGTTATCTCTCCGTCATCAGAAGAACAGTGACGGATCGCCCTCTCTCTTGGTCAGGCGACCGTTTGCCATAATGCCCATGCTTTCCAGCCAGCTCTCAAACTCCGGTGACTCGCGCAGGTTGAGTA'
+            mer      : 'CTC'
+            result   : {
+              count     : 9,
+              positions : [ 25, 27, 59, 61, 63, 111, 113, 119, 128 ]
+            }
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'TAGGGTGTCATTGTAGGGTGAACGTTTAGGGTGCCTAGGGTGGACTTAGGGTGCTAGGGTGTAGGGTGTTAGGGTGTTTGGGGGTAGGGTGTAGGGTGCGTAGGGTGTAGGGTGCCGTGCTTAGGGTGCTAGGGTGACTAGGGTGGTAGGTGTATTAGGGTGATGAACTAGGGTGAGATTAGGGTGGCACGGACTAGGGTGCTGTAGGGTGTTAGGGTGTCACATAGGGTGTAGGGTGCTTAGGGTGATAACGTCCTAGGGTGAGTAGGGTGTATTTCCAAGTGCGGCAAATAGGGTGTAGGGTGGCTAGGGTGAACGTAGGGTGAGATAGGGTGTCACTTTAACTAGATAGGGTGTTAGGGTGCTTAGGGTGTAGGGTGTAGGGTGCTAGGGTGTAGGGTGTTAGGGTGGCCTCGTAGGGTGGGCTAGGGTGAATAGGGTGTAGGGTGGCTAGGGTGTTTAGGGTGTAGGGTGCTAGGGTGCTAGGGTGGTAGGGTGGACGTGATAGGGTGTAGTAGGGTGTTCTAGGGTGAAAGCTGCCTTAGGGTGCTTAGGGTGCGGGGTGTAGGGTGTAGGGTGTGCTAGGGTGAGATTCGTAGGGTGGTAGGGTGTAGGGTGAGTAGGGTGATAGGGTGTCGCAGCCGAACCTTTAGGGTGTAGGGTGAGTAGGGTGCTAGGGTGACTTGTAGGGTGTTGTTACGTAGGGTGTAGGGTGAATAGGGTGGAGTAGGGTGTTAGGGTGCTAGGGTGCTAGGGTGGTAGGGTGATAGGGTGTAGGGTGGTTATTCCTAGGGTGGTAGGGTGCTGCTTAGGGTGTTTTTAGGGTGAGCAGGTAGGGTGACGCTAGGGTGATAGGGTGAGCTAGGGTGTAGGGTGCACGCCTAGGGTGTTAGGGTGTAGGGTGGCGTAGGGTGCTAGGGTGGTAGGGTGCAATATAGGGTGTAGGGTGACAACCCCGCATAGGGTGCGGTCGCACTTATAGGGTGGGTAGGGTGCTCATAGGGTGTAGGGTGTAGGGTG'
+            mer      : 'TAGGGTGTA'
+            result   : {
+              count     : 22,
+              positions : [
+                54, 84, 100, 224, 265, 291, 366, 373, 388, 435, 460, 505, 565,
+                604, 650, 701, 767, 862, 890, 935, 999, 1006
+              ]
+            }
           }
         ]
 
         for test in tests
           sequence = _construct(test)
-          count    = sequence.merCount(test.mer)
-          Assert.equal(count, test.count)
+          result   = sequence.mer(test.mer)
+          Assert.deepEqual(result, test.result)
     },
 
     'letterCounts': {
@@ -103,7 +187,7 @@ module.exports = {
         tests = [
           {
             Type     : Bioi.Dna
-            sequence : vibrioCholeraeOriC
+            sequence : VibrioCholerae.oriC
             printed  : [
               'ATCAATGA TCAACGTA AGCTTCTA AGCATGAT CAAGGTGC TCACACAG TTTATCCA CAACCTGA',
               'GTGGATGA CATCAAGA TAGGTCGT TGTATCTC CTTCCTCT CGTACTCT CATGACCA CGGAAAGA',
@@ -112,13 +196,17 @@ module.exports = {
               'GGCTGTTG TTCTGTTT ATCTTGTT TTGACTGA GACTTGTT AGGATAGA CGGTTTTT CATCACTG',
               'ACTAGCCA AAGCCTTA CTCTGCCT GACATCGA CCGTAAAT TGATAATG AATTTACA TGCTTCCG',
               'CGACGATT TACCTCTT GATCATCG ATCCGATT GAAGATCT TCAATTGT TAATTCTC TTGCCTCG',
-              'ACTCATAG CCATGATG AGCTCTTG ATCATGTT TCCTTAAC CCTCTATT TTTTACGG AAGAATGA'
+              'ACTCATAG CCATGATG AGCTCTTG ATCATGTT TCCTTAAC CCTCTATT TTTTACGG AAGAATGA',
+              'TCAAGCTG CTGCTCTT GATCATCG TTTC'
             ].join('\n')
           }
           {
             Type     : Bioi.Dna
-            sequence : 'AGCTTCAGTTTCCDTATTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATTAAAAAA'
-            printed  : 'AGCTTCAG TTTCCDTA TTTCATTC TGACTGCA ACGGGCAA TATGTCTC TGTGTGGA TTAAAAAA'
+            sequence : 'AGCTTCAGTTTCCDTATTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATTAAAAAAGCGCGCGCGCTA'
+            printed  : """
+              AGCTTCAG TTTCCDTA TTTCATTC TGACTGCA ACGGGCAA TATGTCTC TGTGTGGA TTAAAAAA
+              GCGCGCGC GCTA
+            """
           }
         ]
 

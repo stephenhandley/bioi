@@ -27,8 +27,12 @@ class Sequence
     result
 
 
-  merCount : (mer)->
-    count      = 0
+  mer : (mer)->
+    result = {
+      count     : 0
+      positions : []
+    }
+
     seq_length = @sequence.length
     mer_length = mer.length
     last_start = seq_length - mer_length
@@ -37,9 +41,10 @@ class Sequence
       end = start + mer_length - 1
       subseq = @sequence[start .. end]
       if (subseq is mer)
-        count++
+        result.count++
+        result.positions.push(start)
 
-    count
+    result
 
   kMers : (args)->
     {k} = args
@@ -94,6 +99,9 @@ class Sequence
         if (group.length is size)
           groups.push(group)
           group = []
+
+      if (group.length > 0)
+        groups.push(group)
 
       groups
 

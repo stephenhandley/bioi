@@ -25,4 +25,6 @@ class Dna extends Sequence
 
     result
 
+  DnaABox : ()->
+
 module.exports = Dna

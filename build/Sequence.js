@@ -32,9 +32,12 @@
       return result;
     };
 
-    Sequence.prototype.merCount = function(mer) {
-      var count, end, i, last_start, mer_length, ref, seq_length, start, subseq;
-      count = 0;
+    Sequence.prototype.mer = function(mer) {
+      var end, i, last_start, mer_length, ref, result, seq_length, start, subseq;
+      result = {
+        count: 0,
+        positions: []
+      };
       seq_length = this.sequence.length;
       mer_length = mer.length;
       last_start = seq_length - mer_length;
@@ -42,10 +45,11 @@
         end = start + mer_length - 1;
         subseq = this.sequence.slice(start, +end + 1 || 9e9);
         if (subseq === mer) {
-          count++;
+          result.count++;
+          result.positions.push(start);
         }
       }
-      return count;
+      return result;
     };
 
     Sequence.prototype.kMers = function(args) {
@@ -103,6 +107,9 @@
             groups.push(group);
             group = [];
           }
+        }
+        if (group.length > 0) {
+          groups.push(group);
         }
         return groups;
       };

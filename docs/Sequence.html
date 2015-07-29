@@ -90,8 +90,12 @@
     result
 
 
-  merCount : <span class="hljs-function"><span class="hljs-params">(mer)</span>-&gt;</span>
-    count      = <span class="hljs-number">0</span>
+  mer : <span class="hljs-function"><span class="hljs-params">(mer)</span>-&gt;</span>
+    result = {
+      count     : <span class="hljs-number">0</span>
+      positions : []
+    }
+
     seq_length = <span class="hljs-property">@sequence</span>.length
     mer_length = mer.length
     last_start = seq_length - mer_length
@@ -100,9 +104,10 @@
       end = start + mer_length - <span class="hljs-number">1</span>
       subseq = <span class="hljs-property">@sequence</span>[start .. end]
       <span class="hljs-keyword">if</span> (subseq <span class="hljs-keyword">is</span> mer)
-        count++
+        result.count++
+        result.positions.push(start)
 
-    count
+    result
 
   kMers : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
     {k} = args
@@ -157,6 +162,9 @@
         <span class="hljs-keyword">if</span> (group.length <span class="hljs-keyword">is</span> size)
           groups.push(group)
           group = []
+
+      <span class="hljs-keyword">if</span> (group.length &gt; <span class="hljs-number">0</span>)
+        groups.push(group)
 
       groups
 

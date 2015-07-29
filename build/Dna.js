@@ -37,6 +37,8 @@
       return result;
     };
 
+    Dna.prototype.DnaABox = function() {};
+
     return Dna;
 
   })(Sequence);

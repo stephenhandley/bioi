@@ -12,6 +12,16 @@ module.exports = {
           'ACTGATCGATTCAGTCAG' : 'CTGACTGAATCGATCAGT'
           'TTGTGTC'            : 'GACACAA'
           'AGTCGCATAGT'        : 'ACTATGCGACT'
+          'AAAACCCGGT'         : 'ACCGGGTTTT'
+          'ACACAC'             : 'GTGTGT'
+          """
+          AGCGAACTTAGAGGGCGGC
+          GTGCGCTTACGAACTTAGA
+          GGGCCTTAGTGCGCTTACG
+          GCATTCGCGTGATTCCGGG
+          AGATTCAAGCATTCGCGTG
+          CGGCGGGAGATTCAAGCGA
+          """                  : "TCGCTTGAATCTCCCGCCGCACGCGAATGCTTGAATCTCCCGGAATCACGCGAATGCCGTAAGCGCACTAAGGCCCTCTAAGTTCGTAAGCGCACGCCGCCCTCTAAGTTCGCT"
         }
 
         for sequence, complement of inputs
