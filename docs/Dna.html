@@ -87,7 +87,40 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>  locateOriC : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'unimplemented'</span>)
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'unimplemented'</span>)
+
+  locateTerC : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'unimplemented'</span>)
+
+  minimumSkew : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
+    skews   = <span class="hljs-property">@skews</span>()
+    min     = Infinity
+    indexes = []
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">1</span> ... skews.length]
+      skew = skews[i]
+      <span class="hljs-keyword">if</span> (skew &lt; min)
+        min = skew
+        indexes = [i]
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (skew <span class="hljs-keyword">is</span> min)
+        indexes.push(i)
+
+    indexes
+
+  skews : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
+    result = [<span class="hljs-number">0</span>]
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> ... <span class="hljs-property">@sequence</span>.length]
+      previous = <span class="hljs-property">@sequence</span>[i]
+      delta = <span class="hljs-keyword">switch</span> previous
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'C'</span> <span class="hljs-keyword">then</span> -<span class="hljs-number">1</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'G'</span> <span class="hljs-keyword">then</span> +<span class="hljs-number">1</span>
+        <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>
+
+      skew = result[i] + delta
+      result.push(skew)
+
+    result
+
 
   complement : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
     map = <span class="hljs-property">@constructor</span>.complement_map

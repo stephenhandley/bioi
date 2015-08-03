@@ -22,7 +22,49 @@
     };
 
     Dna.prototype.locateOriC = function() {
-      return console.log('unimplemented');
+      throw new Error('unimplemented');
+    };
+
+    Dna.prototype.locateTerC = function() {
+      throw new Error('unimplemented');
+    };
+
+    Dna.prototype.minimumSkew = function() {
+      var i, indexes, j, min, ref, skew, skews;
+      skews = this.skews();
+      min = Infinity;
+      indexes = [];
+      for (i = j = 1, ref = skews.length; 1 <= ref ? j < ref : j > ref; i = 1 <= ref ? ++j : --j) {
+        skew = skews[i];
+        if (skew < min) {
+          min = skew;
+          indexes = [i];
+        } else if (skew === min) {
+          indexes.push(i);
+        }
+      }
+      return indexes;
+    };
+
+    Dna.prototype.skews = function() {
+      var delta, i, j, previous, ref, result, skew;
+      result = [0];
+      for (i = j = 0, ref = this.sequence.length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+        previous = this.sequence[i];
+        delta = (function() {
+          switch (previous) {
+            case 'C':
+              return -1;
+            case 'G':
+              return +1;
+            default:
+              return 0;
+          }
+        })();
+        skew = result[i] + delta;
+        result.push(skew);
+      }
+      return result;
     };
 
     Dna.prototype.complement = function() {
