@@ -1,7 +1,7 @@
 Sequence = require('./Sequence')
 
 class Dna extends Sequence
-  @letters = ['A', 'C', 'G', 'T']
+  @letters : ['A', 'C', 'G', 'T']
 
   @complement_map : {
     A : 'T'

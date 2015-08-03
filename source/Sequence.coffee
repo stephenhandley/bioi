@@ -1,4 +1,5 @@
-Extend = require('extend')
+Extend     = require('extend')
+BigInteger = require("big-integer")
 
 class Sequence
   constructor : (args)->
@@ -9,6 +10,157 @@ class Sequence
       args.meta
     else
       {}
+
+
+  @converter : (args)->
+    {length} = args
+    letters  = @letters
+
+    {
+      merToNum : (mer)->
+        letter_to_num = {}
+        for i in [0 ... letters.length]
+          letter = letters[i]
+          letter_to_num[letter] = i
+
+        result = BigInteger()
+
+        for i in [0 ... mer.length]
+          index   = (mer.length - 1) - i
+          letter  = mer[index]
+          power   = BigInteger(letters.length).pow(i)
+          num     = BigInteger(letter_to_num[letter])
+          result  = result.add(power.multiply(num))
+
+        result.toString()
+
+      numToMer : (num)->
+        unless BigInteger.isInstance(num)
+          num = BigInteger(num)
+
+        remainder = num
+        result    = ''
+        i         = length - 1
+
+        while (i >= 0)
+          divisor = BigInteger(letters.length).pow(i)
+          {quotient, remainder} = remainder.divmod(divisor)
+
+          index   = quotient.toJSNumber()
+          letter  = letters[index]
+          result += letter
+          i--
+
+        result
+    }
+
+
+  clumps : (args)->
+    window = args.window # window size to look for clumps in, "L"
+    times  = args.times  # minimum number of clump occurences, "t"
+    length = args.length # mer length to look for, "k"
+
+    clumps = []
+
+    freq_range = @frequencyRange(length : args.length)
+
+    clumpIndex = (0 for i in freq_range)
+
+    first_window = new @constructor(sequence : @sequence[0 ... window])
+    freqs = first_window.frequencyArray(length : length)
+
+    for i in freq_range
+      if (freqs[i] >= times)
+        clumpIndex[i] = 1
+
+    seq_length = @sequence.length
+    last       = seq_length - window
+    converter  = @constructor.converter(length : length)
+
+    for i in [1 .. last]
+      first_start = i - 1
+      first_end   = first_start + length
+      first_mer   = @sequence[first_start ... first_end]
+      first_index = converter.merToNum(first_mer)
+      freqs[first_index] -= 1
+
+      last_start = i + window - length
+      last_end   = i + window
+      last_mer   = @sequence[last_start ... last_end]
+      last_index = converter.merToNum(last_mer)
+      freqs[last_index] += 1
+
+      if (freqs[last_index] >= times)
+        clumpIndex[last_index] = 1
+
+    for i in freq_range
+      if (clumpIndex[i] is 1)
+        mer = converter.numToMer(i)
+        clumps.push(mer)
+
+    clumps
+
+  frequencyArray : (args)->
+    {length} = args
+
+    result = []
+    for i in @frequencyRange(args)
+      result[i] = 0
+
+    converter = @constructor.converter(args)
+
+    seq_length = @sequence.length
+    last       = seq_length - length
+
+    for i in [0 .. last]
+      end = i + length
+      mer = @sequence[i ... end]
+      num = converter.merToNum(mer)
+
+      result[num] = result[num] + 1
+
+    result
+
+
+  frequencyRange : (args)->
+    {length} = args
+    letters = @constructor.letters
+    [0 .. (Math.pow(letters.length, length) - 1)]
+
+
+  group : (args)->
+    {dims} = args
+    combine = (args)->
+      {depth, input} = args
+
+      size = dims[depth]
+
+      groups = []
+      group  = []
+
+      for atom in input
+        group.push(atom)
+
+        if (group.length is size)
+          groups.push(group)
+          group = []
+
+      if (group.length > 0)
+        groups.push(group)
+
+      groups
+
+    result = @sequence
+    depth  = dims.length - 1
+
+    while (depth >= 0)
+      result = combine(
+        depth : depth
+        input : result
+      )
+      depth = depth - 1
+
+    result
 
 
   letterCounts : ()->
@@ -46,14 +198,16 @@ class Sequence
 
     result
 
-  kMers : (args)->
-    {k} = args
+
+  mers : (args)->
+    {length} = args # mer length to look for, "k"
+
     counts     = {}
     seq_length = @sequence.length
-    last_start = seq_length - k
+    last_start = seq_length - length
 
     for start in [0 .. last_start]
-      end = start + k
+      end = start + length
       mer = @sequence[start ... end]
       unless mer of counts
         counts[mer] = 0
@@ -81,41 +235,71 @@ class Sequence
       else if (count is max)
         result.max.mers.push(mer)
 
+    result.max.mers.sort()
     result
 
-  group : (args)->
-    {dims} = args
-    combine = (args)->
-      {depth, input} = args
+  # TODO: make result set similar to mers ?
+  mers2 : (args)->
+    {length} = args
 
-      size = dims[depth]
+    frequent  = []
+    freqs     = @frequencyArray(args)
+    max       = Math.max.apply(null, freqs)
+    converter = @constructor.converter(args)
 
-      groups = []
-      group  = []
+    for i in @frequencyRange(args)
+      if (freqs[i] is max)
+        mer = converter.numToMer(i)
+        frequent.push(mer)
 
-      for atom in input
-        group.push(atom)
+    {
+      count : max
+      mers  : frequent
+    }
 
-        if (group.length is size)
-          groups.push(group)
-          group = []
+  # TODO: make result set similar to mers?
+  mersSort : (args)->
+    {length} = args # mer length to look for, "k"
 
-      if (group.length > 0)
-        groups.push(group)
+    frequent = {
+      index    : []
+      count    : []
+      patterns : []
+    }
 
-      groups
+    converter = @constructor.converter(args)
 
-    result = @sequence
-    depth  = dims.length - 1
+    seq_length = @sequence.length
+    last       = seq_length - length
 
-    while (depth >= 0)
-      result = combine(
-        depth : depth
-        input : result
-      )
-      depth = depth - 1
+    for i in [0 .. last]
+      end = i + length
+      mer = @sequence[i ... end]
+      index = converter.merToNum(mer)
+      frequent.index[i] = index
+      frequent.count[i] = 1
 
-    result
+    frequent.index.sort()
+
+    max = 1
+    for i in [1 .. last]
+      if (frequent.index[i] is frequent.index[i - 1])
+        new_count = frequent.count[i - 1] + 1
+        frequent.count[i] = new_count
+        if (new_count > max)
+          max = new_count
+
+    for i in [0 .. last]
+      if (frequent.count[i] is max)
+        num = frequent.index[i]
+        mer = converter.numToMer(num)
+        frequent.patterns.push(mer)
+
+    {
+      count : max
+      mers  : frequent.patterns.sort()
+    }
+
 
   print : (args)->
     lines = @group(dims: [8, 8])
@@ -124,11 +308,6 @@ class Sequence
         group.join('')
       ).join(' ')
     ).join('\n')
-
-
-
-
-
 
 
 module.exports = Sequence

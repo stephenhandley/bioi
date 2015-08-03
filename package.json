@@ -26,6 +26,7 @@
     "mocha": "^2.2.5"
   },
   "dependencies": {
+    "big-integer": "^1.5.5",
     "extend": "^3.0.0"
   }
 }

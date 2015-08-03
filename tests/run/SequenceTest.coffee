@@ -15,6 +15,267 @@ module.exports = {
         Assert.equal(sequence, dna.sequence)
     }
 
+
+    '@converter' : {
+      'should properly convert between mer and number': ()->
+        tests = {
+          AA       : 0
+          TT       : 15
+          GT       : 11
+          CC       : 5
+          AAA      : 0
+          TTT      : 63
+          ATGCAA   : 912
+          CCCATTC  : 5437
+          ACCCATTC : 5437
+        }
+
+        for mer, num of tests
+          converter = Bioi.Dna.converter(length : mer.length)
+          Assert.equal(converter.merToNum(mer), num)
+          Assert.equal(converter.numToMer(num), mer)
+
+      'should properly invert' : ()->
+        mer       = 'ACTGAGTCGTGAGGATATATAGGGAACCCATGGAGAGTCATACATAATATATATCGAGATATAGATACA'
+        converter = Bioi.Dna.converter(length : mer.length)
+        num       = converter.merToNum(mer)
+        inverted  = converter.numToMer(num)
+
+        Assert.equal(mer, inverted)
+    }
+
+
+    'clumps' : {
+      'should return mers matching specified args': ()->
+        tests = [
+          {
+            Type     : Bioi.Dna
+            sequence : 'gatcagcataagggtccCTGCAATGCATGACAAGCCTGCAGTtgtttta'
+            window   : 25
+            times    : 3
+            length   : 4
+            clumps   : ['TGCA']
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : VibrioCholerae.sequence
+            window   : 500
+            times    : 3
+            length   : 9
+            clumps   : [
+              'AAAAACTGA',
+              'AAACTCAAA',
+              'AAATAAAAA',
+              'AAATAAATA',
+              'AACAGCAAC',
+              'AAGCATGAT',
+              'AAGGTGGTC',
+              'AAGTCAGGT',
+              'ACAGCAACA',
+              'ACTCACACT',
+              'AGAGAGAGA',
+              'AGCAACAAG',
+              'AGCAACAGC',
+              'AGCATGATC',
+              'AGGGGGTAT',
+              'AGGTAAGTC',
+              'AGGTTGGGA',
+              'AGTCAGGTA',
+              'ATAAACAAT',
+              'ATGATCAAG',
+              'ATGCCGAGT',
+              'ATGTTATTG',
+              'ATTGCGGAT',
+              'ATTGGGACT',
+              'ATTTTTGAT',
+              'CAAAACCCT',
+              'CAACAACAA',
+              'CAACAGCAA',
+              'CACACACAC',
+              'CACCAAACT',
+              'CACGCGTTG',
+              'CAGCAACAA',
+              'CAGCAACAG',
+              'CAGGTAAGT',
+              'CATGATCAT',
+              'CCCCCCCCC',
+              'CCCCCTTAT',
+              'CCCCTTATA',
+              'CCCTTATAG',
+              'CCTCCCCCT',
+              'CCTTATAGG',
+              'CGCCAGATG',
+              'CGGATGTTA',
+              'CGTGGTGGT',
+              'CGTGTTTGC',
+              'CTATAAACA',
+              'CTCCCCCTT',
+              'CTCTTGATC',
+              'CTGGTTCTG',
+              'CTTAAAGAT',
+              'CTTATAGGG',
+              'CTTGATCAT',
+              'GAAGGCATC',
+              'GAAGGTGGT',
+              'GAGAGAGAG',
+              'GAGGGGGTA',
+              'GAGGTTGGG',
+              'GATGTTATT',
+              'GATTTTTGA',
+              'GCAACAGCA',
+              'GCAGCAACA',
+              'GCATGATCA',
+              'GCCGAGTAA',
+              'GCGGATGTT',
+              'GCTTTCAGC',
+              'GGAGGGGGT',
+              'GGAGGTTGG',
+              'GGATGTTAT',
+              'GGGAGGGGG',
+              'GGGAGGTTG',
+              'GGGGAGGTT',
+              'GGGGGGGGG',
+              'GGGGGTATT',
+              'GGGGTATTT',
+              'GGGTATTTC',
+              'GGTAAGTCA',
+              'GGTATTTCG',
+              'GGTGGTCGT',
+              'GGTTCTGGT',
+              'GGTTGGGAG',
+              'GTAAGTCAG',
+              'GTATTTCGC',
+              'GTCAGGTAA',
+              'GTTATTGCG',
+              'GTTCTGGTT',
+              'GTTGGGAGG',
+              'TAAAGATTC',
+              'TAAGTCAGG',
+              'TATAAACAA',
+              'TATTGCGGA',
+              'TCACCAATC',
+              'TCAGGTAAG',
+              'TCCACACAA',
+              'TCCCCCTTA',
+              'TCGTCGTGA',
+              'TCTATAAAC',
+              'TCTGGTTCT',
+              'TCTTGATCA',
+              'TCTTTTTCA',
+              'TGATTTTCA',
+              'TGATTTTTG',
+              'TGCCGAGTA',
+              'TGCGGATGT',
+              'TGGGAGGGG',
+              'TGGTCCCAT',
+              'TGGTTCTGG',
+              'TGTTATTGC',
+              'TTACTGTGT',
+              'TTATAGGGG',
+              'TTATCGGTT',
+              'TTATTGCGG',
+              'TTCTGGTTC',
+              'TTGATTTTT',
+              'TTGCATTTT',
+              'TTGCGGATG',
+              'TTGGGAGGG',
+              'TTGGTCCCA',
+              'TTGTAAAAT',
+              'TTTGATTTT',
+              'TTTGCATTT',
+              'TTTGGTCCC',
+              'TTTGGTTTC',
+              'TTTTGATTT',
+              'TTTTTGATT'
+            ]
+          }
+        ]
+
+        for test in tests
+          sequence = _construct(test)
+          clumps   = sequence.clumps(test)
+          Assert.deepEqual(clumps, test.clumps)
+    }
+
+    'frequencyArray' : {
+      'should return expected frequency array': ()->
+        tests = [
+          {
+            Type     : Bioi.Dna
+            sequence : 'ACGCGGCTCTGAAA'
+            length   : 2
+            freqs    : [2, 1, 0, 0, 0, 0, 2, 2, 1, 2, 1, 0, 0, 1, 1, 0]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'AAAAC'
+            length   : 2
+            freqs    : [3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'TTAAA'
+            length   : 2
+            freqs    : [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'AAA'
+            length   : 2
+            freqs    : [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          }
+        ]
+
+        for test in tests
+          sequence = _construct(test)
+          freqs    = sequence.frequencyArray(length: test.length)
+          Assert.deepEqual(freqs, test.freqs)
+    }
+
+    'letterCounts' : {
+      'should return counts of letters': ()->
+        tests = [
+          {
+            Type     : Bioi.Dna
+            sequence : 'ACTGAAATTCTGAGGCT'
+            counts   : {
+              A : 5
+              C : 3
+              T : 5
+              G : 4
+            }
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'TTTTTT'
+            counts   : {
+              A : 0
+              C : 0
+              T : 6
+              G : 0
+            }
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : """
+              AGCTTTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATT
+              AAAAAAAGAGTGTCTGATAGCAGC
+            """
+            counts   : {
+              A: 20
+              C: 12
+              T: 21
+              G: 17
+            }
+          }
+        ]
+
+        for test in tests
+          sequence = _construct(test)
+          counts   = sequence.letterCounts()
+          Assert.deepEqual(counts, test.counts)
+    }
+
     'mer': {
       'should return count and positions of mer': ()->
         tests = [
@@ -126,61 +387,30 @@ module.exports = {
           sequence = _construct(test)
           result   = sequence.mer(test.mer)
           Assert.deepEqual(result, test.result)
-    },
+    }
 
-    'letterCounts': {
-      'should return counts of letters': ()->
-        tests = [
-          {
-            Type     : Bioi.Dna
-            sequence : 'ACTGAAATTCTGAGGCT'
-            counts   : {
-              A : 5
-              C : 3
-              T : 5
-              G : 4
-            }
-          }
-          {
-            Type     : Bioi.Dna
-            sequence : 'TTTTTT'
-            counts   : {
-              A : 0
-              C : 0
-              T : 6
-              G : 0
-            }
-          }
-          {
-            Type     : Bioi.Dna
-            sequence : """
-              AGCTTTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATT
-              AAAAAAAGAGTGTCTGATAGCAGC
-            """
-            counts   : {
-              A: 20
-              C: 12
-              T: 21
-              G: 17
-            }
-          }
-        ]
+
+    'mers' : {
+      'should return frequent mers of length arg': ()->
+        tests = require('../data/SequenceTest.mers.data')
 
         for test in tests
           sequence = _construct(test)
-          counts   = sequence.letterCounts()
-          Assert.deepEqual(counts, test.counts)
+          mers     = sequence.mers(length: test.length)
+          Assert.deepEqual(mers, test.mers)
     }
 
-    'kMers': {
-      'should return count of mers of length k': ()->
-        tests = require('../data/SequenceTest.kMers.data')
+
+    'mersSort' : {
+      'should return frequent mers of length arg': ()->
+        tests = require('../data/SequenceTest.mers.data')
 
         for test in tests
           sequence = _construct(test)
-          kMers    = sequence.kMers(k: test.k)
-          Assert.deepEqual(kMers, test.kMers)
+          result   = sequence.mersSort(length: test.length)
+          Assert.deepEqual(result, test.mers.max)
     }
+
 
     'print' : {
       'should fuckn print' : ()->

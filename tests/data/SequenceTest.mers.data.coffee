@@ -5,8 +5,8 @@ module.exports = [
   {
     Type     : Bioi.Dna
     sequence : 'TGGTAGCGACGTTGGTCCCGCCGCTTGAGAATCTGGATGAACATAAGCTCCCACTTGGCTTATTCAGAGAACTGGTCAACACTTGTCTCTCCCAGCCAGGTCTGACCACCGGGCAACTTTTAGAGCACTATCGTGGTACAAATAATGCTGCCAC'
-    k        : 3
-    kMers    : {
+    length   : 3
+    mers     : {
       all: {
         AAA: 1
         AAC: 4
@@ -82,8 +82,8 @@ module.exports = [
   {
     Type     : Bioi.Dna
     sequence : 'CAGTGGCAGATGACATTTTGCTGGTCGACTGGTTACAACAACGCCTGGGGCTTTTGAGCAACGAGACTTTTCAATGTTGCACCGTTTGCTGCATGATATTGAAAACAATATCACCAAATAAATAACGCCTTAGTAAGTAGCTTTT'
-    k        : 4
-    kMers    : {
+    length   : 4
+    mers     : {
       all: {
         AAAA: 1
         AAAC: 1
@@ -202,8 +202,8 @@ module.exports = [
   {
     Type     : Bioi.Dna
     sequence : 'ATACAATTACAGTCTGGAACCGGATGAACTGGCCGCAGGTTAACAACAGAGTTGCCAGGCACTGCCGCTGACCAGCAACAACAACAATGACTTTGACGCGAAGGGGATGGCATGAGCGAACTGATCGTCAGCCGTCAGCAACGAGTATTGTTGCTGACCCTTAACAATCCCGCCGCACGTAATGCGCTAACTAATGCCCTGCTG'
-    k        : 5
-    kMers    : {
+    length   : 5
+    mers     : {
       all: {
         AACAA: 5
         AACAG: 1
@@ -384,8 +384,8 @@ module.exports = [
   {
     Type     : Bioi.Dna
     sequence : 'CCAGCGGGGGTTGATGCTCTGGGGGTCACAAGATTGCATTTTTATGGGGTTGCAAAAATGTTTTTTACGGCAGATTCATTTAAAATGCCCACTGGCTGGAGACATAGCCCGGATGCGCGTCTTTTACAACGTATTGCGGGGTAAAATCGTAGATGTTTTAAAATAGGCGTAAC'
-    k        : 5
-    kMers    : {
+    length   : 5
+    mers     : {
       all: {
         AAAAA: 1
         AAAAT: 4
@@ -529,9 +529,9 @@ module.exports = [
       max: {
         count: 4
         mers: [
+          'AAAAT'
           'GGGGT'
           'TTTTA'
-          'AAAAT'
         ]
       }
     }
@@ -539,8 +539,8 @@ module.exports = [
   {
     Type     : Bioi.Dna
     sequence : 'TATCGCAATATCGCAATATCGCAACTAAGGTAGGCCGGGTGGGGTAATCGCTAAGGTACTAAGGTACTAGTCTGTATCGCAAGGGTAATCGCTAGTCTGCTAAGGTAGGCCGGGTGGGGTAATCGGGGTAATCGTATCGCAACTAAGGTAGGCCGGGTGCTAAGGTAGGGTAATCGGGCCGGGTGGGCCGGGTGGGCCGGGTGGGGTAATCGGGGTAATCGGGGTAATCGCTAGTCTGCTAGTCTGGGCCGGGTGTATCGCAACTAAGGTACTAAGGTAGGCCGGGTGTATCGCAAGGGTAATCGCTAAGGTACTAAGGTACTAGTCTGCTAGTCTGGGCCGGGTGCTAGTCTGTATCGCAAGGGTAATCGCTAAGGTATATCGCAACTAAGGTACTAGTCTGGGGTAATCGGGGTAATCGGGCCGGGTGCTAAGGTACTAAGGTATATCGCAACTAGTCTGTATCGCAATATCGCAACTAAGGTAGGGTAATCGCTAGTCTGTATCGCAAGGGTAATCGCTAGTCTGGGGTAATCGCTAAGGTAGGCCGGGTGCTAAGGTAGGCCGGGTGGGGTAATCGGGCCGGGTGTATCGCAACTAGTCTGCTAAGGTACTAAGGTATATCGCAACTAGTCTGCTAAGGTACTAGTCTGGGCCGGGTGTATCGCAATATCGCAACTAAGGTATATCGCAATATCGCAATATCGCAACTAAGGTATATCGCAAGGGTAATCGCTAAGGTACTAAGGTACTAAGGTAGGGTAATCGTATCGCAACTAGTCTGTATCGCAAGGCCGGGTGTATCGCAATATCGCAAGGCCGGGTGCTAGTCTG'
-    k        : 13
-    kMers    : {
+    length   : 13
+    mers     : {
       all: {
         AACTAAGGTACTA: 2
         AACTAAGGTAGGC: 2
@@ -858,18 +858,18 @@ module.exports = [
       max: {
         count: 7
         mers: [
-          'TATCGCAATATCG'
-          'ATCGCAATATCGC'
-          'TCGCAATATCGCA'
-          'CGCAATATCGCAA'
-          'TATCGCAACTAAG'
-          'ATCGCAACTAAGG'
-          'TCGCAACTAAGGT'
-          'CGCAACTAAGGTA'
-          'CTAAGGTACTAAG'
-          'TAAGGTACTAAGG'
           'AAGGTACTAAGGT'
           'AGGTACTAAGGTA'
+          'ATCGCAACTAAGG'
+          'ATCGCAATATCGC'
+          'CGCAACTAAGGTA'
+          'CGCAATATCGCAA'
+          'CTAAGGTACTAAG'
+          'TAAGGTACTAAGG'
+          'TATCGCAACTAAG'
+          'TATCGCAATATCG'
+          'TCGCAACTAAGGT'
+          'TCGCAATATCGCA'
         ]
       }
     }
@@ -877,8 +877,8 @@ module.exports = [
   {
     Type     : Bioi.Dna
     sequence : 'ACGTTGCATGTCGCATGATGCATGAGAGCT'
-    k        : 4
-    kMers    : {
+    length   : 4
+    mers     : {
       all: {
         ACGT: 1
         AGAG: 1
@@ -904,15 +904,18 @@ module.exports = [
       }
       max : {
         count : 3
-        mers  : ['GCAT', 'CATG']
+        mers  : [
+          'CATG'
+          'GCAT'
+        ]
       }
     }
   }
   {
     Type     : Bioi.Dna
     sequence : 'ACTG'
-    k        : 1
-    kMers    : {
+    length   : 1
+    mers     : {
       all : {
         A : 1
         C : 1
@@ -921,15 +924,20 @@ module.exports = [
       }
       max : {
         count : 1
-        mers : ['A', 'C', 'T', 'G']
+        mers : [
+          'A',
+          'C',
+          'G',
+          'T'
+        ]
       }
     }
   }
   {
     Type     : Bioi.Dna
     sequence : 'CGATATATCCATAG'
-    k        : 3
-    kMers    : {
+    length   : 3
+    mers     : {
       all: {
         ATA: 3
         ATC: 1
@@ -952,8 +960,8 @@ module.exports = [
   {
     Type     : Bioi.Dna
     sequence : 'ACAACTATGCATACTATCGGGAACTATCCT'
-    k        : 5
-    kMers    : {
+    length   : 5
+    mers     : {
       all: {
         AACTA: 2
         ACAAC: 1
@@ -1012,8 +1020,8 @@ module.exports = [
       GCAGATTTGACTTTTGTACCCCGTAGTGCGCTTTGTACCCTGACAA
       GGC
     """
-    k     : 11
-    kMers : {
+    length : 11
+    mers   : {
       all: {
         AAAAAAAGAGT: 1
         AAAAAAGAGTG: 1
@@ -1315,8 +1323,8 @@ module.exports = [
       max: {
         count: 13
         mers: [
-          'GCTGACAAGGC'
           'CAGATTTGACT'
+          'GCTGACAAGGC'
         ]
       }
     }
@@ -1324,12 +1332,8 @@ module.exports = [
   {
     Type     : Bioi.Dna
     sequence : VibrioCholerae.oriC
-    k        : 9
-    kMers    : {
-      max: {
-        count: 3,
-        mers: [ 'ATGATCAAG', 'CTCTTGATC', 'TCTTGATCA', 'CTTGATCAT' ]
-      }
+    length   : 9
+    mers     : {
       all: {
         ATCAATGAT: 1,
         TCAATGATC: 1,
@@ -1849,17 +1853,22 @@ module.exports = [
         TCATCGTTT: 1,
         CATCGTTTC: 1
       }
+      max: {
+        count: 3,
+        mers: [
+          'ATGATCAAG',
+          'CTCTTGATC',
+          'CTTGATCAT',
+          'TCTTGATCA'
+        ]
+      }
     }
   }
   {
     Type     : Bioi.Dna
     sequence : 'CGGAGGACTCTAGGTAACGCTTATCAGGTCCATAGGACATTCA'
-    k        : 3
-    kMers    : {
-      max: {
-        count: 4
-        mers: [ 'AGG' ]
-      }
+    length   : 3
+    mers     : {
       all: {
         CGG: 1,
         GGA: 3,
@@ -1892,6 +1901,10 @@ module.exports = [
         ACA: 1,
         ATT: 1,
         TTC: 1
+      }
+      max: {
+        count: 4
+        mers: [ 'AGG' ]
       }
     }
   }
