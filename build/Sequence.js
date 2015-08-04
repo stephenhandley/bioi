@@ -1,10 +1,12 @@
 (function() {
-  var BigInteger, Extend, Sequence,
+  var BigInteger, Extend, Sequence, Type,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   Extend = require('extend');
 
-  BigInteger = require("big-integer");
+  BigInteger = require('big-integer');
+
+  Type = require('type-of-is');
 
   Sequence = (function() {
     function Sequence(args) {
@@ -181,6 +183,20 @@
         depth = depth - 1;
       }
       return result;
+    };
+
+    Sequence.prototype.hammingDistance = function(other) {
+      var distance, i, j, my_letter, other_letter, other_sequence, ref;
+      other_sequence = Type(other, this.constructor) ? other.sequence : other;
+      distance = 0;
+      for (i = j = 0, ref = this.sequence.length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+        my_letter = this.sequence[i];
+        other_letter = other_sequence[i];
+        if (!(my_letter === other_letter)) {
+          distance += 1;
+        }
+      }
+      return distance;
     };
 
     Sequence.prototype.letterCounts = function() {

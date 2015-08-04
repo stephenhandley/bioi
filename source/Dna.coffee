@@ -9,13 +9,15 @@ class Dna extends Sequence
     G : 'C'
     T : 'A'
   }
-
+  
   # replication origin
   locateOriC : ()->
     throw new Error('unimplemented')
 
+
   locateTerC : ()->
     throw new Error('unimplemented')
+
 
   minimumSkew : ()->
     skews   = @skews()
@@ -31,6 +33,7 @@ class Dna extends Sequence
         indexes.push(i)
 
     indexes
+
 
   skews : ()->
     result = [0]
@@ -57,6 +60,7 @@ class Dna extends Sequence
       result += map[letter]
 
     result
+
 
   DnaABox : ()->
 

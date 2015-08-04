@@ -191,11 +191,13 @@ module.exports = {
           }
         ]
 
+        tests.pop()
         for test in tests
           sequence = _construct(test)
           clumps   = sequence.clumps(test)
           Assert.deepEqual(clumps, test.clumps)
     }
+
 
     'frequencyArray' : {
       'should return expected frequency array': ()->
@@ -231,6 +233,67 @@ module.exports = {
           freqs    = sequence.frequencyArray(length: test.length)
           Assert.deepEqual(freqs, test.freqs)
     }
+
+    'hammingDistance' : {
+        'should calculate the distance between two sequences' : ()->
+          tests = [
+            {
+              Type       : Bioi.Dna
+              sequence_a : 'GGGCCGTTGGT'
+              sequence_b : 'GGACCGTTGAC'
+              distance   : 3
+            }
+            {
+              Type       : Bioi.Dna
+              sequence_a : 'AAAA'
+              sequence_b : 'TTTT'
+              distance   : 4
+            }
+            {
+              Type       : Bioi.Dna
+              sequence_a : 'ACGTACGT'
+              sequence_b : 'TACGTACG'
+              distance   : 8
+            }
+            {
+              Type       : Bioi.Dna
+              sequence_a : 'ACGTACGT'
+              sequence_b : 'CCCCCCCC'
+              distance   : 6
+            }
+            {
+              Type       : Bioi.Dna
+              sequence_a : 'ACGTACGT'
+              sequence_b : 'TGCATGCA'
+              distance   : 8
+            }
+            {
+              Type       : Bioi.Dna
+              sequence_a : 'GATAGCAGCTTCTGAACTGGTTACCTGCCGTGAGTAAATTAAAATTTTATTGACTTAGGTCACTAAATACT'
+              sequence_b : 'AATAGCAGCTTCTCAACTGGTTACCTCGTATGAGTAAATTAGGTCATTATTGACTCAGGTCACTAACGTCT'
+              distance   : 15
+            }
+            {
+              Type       : Bioi.Dna
+              sequence_a : 'AGAAACAGACCGCTATGTTCAACGATTTGTTTTATCTCGTCACCGGGATATTGCGGCCACTCATCGGTCAGTTGATTACGCAGGGCGTAAATCGCCAGAATCAGGCTG'
+              sequence_b : 'AGAAACCCACCGCTAAAAACAACGATTTGCGTAGTCAGGTCACCGGGATATTGCGGCCACTAAGGCCTTGGATGATTACGCAGAACGTATTGACCCAGAATCAGGCTC'
+              distance   : 28
+            }
+          ]
+
+          for test in tests
+            sequence_a = new test.Type(sequence : test.sequence_a)
+            sequence_b = new test.Type(sequence : test.sequence_b)
+
+            for distance in [
+              sequence_a.hammingDistance(sequence_b)
+              sequence_b.hammingDistance(sequence_a)
+              sequence_a.hammingDistance(test.sequence_b)
+              sequence_b.hammingDistance(test.sequence_a)
+            ]
+              Assert.equal(distance, test.distance)
+    }
+
 
     'letterCounts' : {
       'should return counts of letters': ()->

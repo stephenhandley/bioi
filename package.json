@@ -1,6 +1,6 @@
 {
   "name": "bioi",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "",
   "main": "index.js",
   "license": "substanceware",
@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "big-integer": "^1.5.5",
-    "extend": "^3.0.0"
+    "extend": "^3.0.0",
+    "type-of-is": "^3.4.0"
   }
 }

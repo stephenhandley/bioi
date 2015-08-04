@@ -1,5 +1,6 @@
 Extend     = require('extend')
-BigInteger = require("big-integer")
+BigInteger = require('big-integer')
+Type       = require('type-of-is')
 
 class Sequence
   constructor : (args)->
@@ -54,7 +55,6 @@ class Sequence
         result
     }
 
-
   clumps : (args)->
     window = args.window # window size to look for clumps in, "L"
     times  = args.times  # minimum number of clump occurences, "t"
@@ -99,6 +99,7 @@ class Sequence
         clumps.push(mer)
 
     clumps
+
 
   frequencyArray : (args)->
     {length} = args
@@ -161,6 +162,23 @@ class Sequence
       depth = depth - 1
 
     result
+
+
+  hammingDistance : (other)->
+    other_sequence = if Type(other, @constructor)
+      other.sequence
+    else
+      other
+
+    distance = 0
+
+    for i in [0 ... @sequence.length]
+      my_letter    = @sequence[i]
+      other_letter = other_sequence[i]
+      unless (my_letter is other_letter)
+        distance += 1
+
+    distance
 
 
   letterCounts : ()->

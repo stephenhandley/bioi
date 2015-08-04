@@ -62,7 +62,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>Extend     = <span class="hljs-built_in">require</span>(<span class="hljs-string">'extend'</span>)
-BigInteger = <span class="hljs-built_in">require</span>(<span class="hljs-string">"big-integer"</span>)
+BigInteger = <span class="hljs-built_in">require</span>(<span class="hljs-string">'big-integer'</span>)
+Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string">'type-of-is'</span>)
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sequence</span></span>
   constructor : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
@@ -117,7 +118,6 @@ BigInteger = <span class="hljs-built_in">require</span>(<span class="hljs-string
         result
     }
 
-
   clumps : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
     <span class="hljs-built_in">window</span> = args.<span class="hljs-built_in">window</span> <span class="hljs-comment"># window size to look for clumps in, "L"</span>
     times  = args.times  <span class="hljs-comment"># minimum number of clump occurences, "t"</span>
@@ -162,6 +162,7 @@ BigInteger = <span class="hljs-built_in">require</span>(<span class="hljs-string
         clumps.push(mer)
 
     clumps
+
 
   frequencyArray : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
     {length} = args
@@ -224,6 +225,23 @@ BigInteger = <span class="hljs-built_in">require</span>(<span class="hljs-string
       depth = depth - <span class="hljs-number">1</span>
 
     result
+
+
+  hammingDistance : <span class="hljs-function"><span class="hljs-params">(other)</span>-&gt;</span>
+    other_sequence = <span class="hljs-keyword">if</span> Type(other, <span class="hljs-property">@constructor</span>)
+      other.sequence
+    <span class="hljs-keyword">else</span>
+      other
+
+    distance = <span class="hljs-number">0</span>
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> ... <span class="hljs-property">@sequence</span>.length]
+      my_letter    = <span class="hljs-property">@sequence</span>[i]
+      other_letter = other_sequence[i]
+      <span class="hljs-keyword">unless</span> (my_letter <span class="hljs-keyword">is</span> other_letter)
+        distance += <span class="hljs-number">1</span>
+
+    distance
 
 
   letterCounts : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
