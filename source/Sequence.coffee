@@ -373,6 +373,16 @@ class Sequence
   mersApproximate : (args)->
     {length, distance} = args
 
+    # TODO: optionally include reverse complements in counts
+    #inout
+    #DNA string Text as well as integers k and d.
+    #Output
+    #All k-mers Pattern that maximize the sum COUNTd(Text, Pattern) + COUNTd(Text, ~Pattern) over all possible k-mers.
+    # complement = if ('complement' of args)
+    #   args.complement
+    # else
+    #   false
+
     converter = @constructor.converter(args)
 
     result    = @_mersResultStructure()
