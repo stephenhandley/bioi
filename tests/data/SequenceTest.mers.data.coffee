@@ -6,7 +6,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : 'TGGTAGCGACGTTGGTCCCGCCGCTTGAGAATCTGGATGAACATAAGCTCCCACTTGGCTTATTCAGAGAACTGGTCAACACTTGTCTCTCCCAGCCAGGTCTGACCACCGGGCAACTTTTAGAGCACTATCGTGGTACAAATAATGCTGCCAC'
     length   : 3
-    mers     : {
+    result   : {
       all: {
         AAA: 1
         AAC: 4
@@ -83,7 +83,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : 'CAGTGGCAGATGACATTTTGCTGGTCGACTGGTTACAACAACGCCTGGGGCTTTTGAGCAACGAGACTTTTCAATGTTGCACCGTTTGCTGCATGATATTGAAAACAATATCACCAAATAAATAACGCCTTAGTAAGTAGCTTTT'
     length   : 4
-    mers     : {
+    result   : {
       all: {
         AAAA: 1
         AAAC: 1
@@ -203,7 +203,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : 'ATACAATTACAGTCTGGAACCGGATGAACTGGCCGCAGGTTAACAACAGAGTTGCCAGGCACTGCCGCTGACCAGCAACAACAACAATGACTTTGACGCGAAGGGGATGGCATGAGCGAACTGATCGTCAGCCGTCAGCAACGAGTATTGTTGCTGACCCTTAACAATCCCGCCGCACGTAATGCGCTAACTAATGCCCTGCTG'
     length   : 5
-    mers     : {
+    result   : {
       all: {
         AACAA: 5
         AACAG: 1
@@ -385,7 +385,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : 'CCAGCGGGGGTTGATGCTCTGGGGGTCACAAGATTGCATTTTTATGGGGTTGCAAAAATGTTTTTTACGGCAGATTCATTTAAAATGCCCACTGGCTGGAGACATAGCCCGGATGCGCGTCTTTTACAACGTATTGCGGGGTAAAATCGTAGATGTTTTAAAATAGGCGTAAC'
     length   : 5
-    mers     : {
+    result   : {
       all: {
         AAAAA: 1
         AAAAT: 4
@@ -540,7 +540,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : 'TATCGCAATATCGCAATATCGCAACTAAGGTAGGCCGGGTGGGGTAATCGCTAAGGTACTAAGGTACTAGTCTGTATCGCAAGGGTAATCGCTAGTCTGCTAAGGTAGGCCGGGTGGGGTAATCGGGGTAATCGTATCGCAACTAAGGTAGGCCGGGTGCTAAGGTAGGGTAATCGGGCCGGGTGGGCCGGGTGGGCCGGGTGGGGTAATCGGGGTAATCGGGGTAATCGCTAGTCTGCTAGTCTGGGCCGGGTGTATCGCAACTAAGGTACTAAGGTAGGCCGGGTGTATCGCAAGGGTAATCGCTAAGGTACTAAGGTACTAGTCTGCTAGTCTGGGCCGGGTGCTAGTCTGTATCGCAAGGGTAATCGCTAAGGTATATCGCAACTAAGGTACTAGTCTGGGGTAATCGGGGTAATCGGGCCGGGTGCTAAGGTACTAAGGTATATCGCAACTAGTCTGTATCGCAATATCGCAACTAAGGTAGGGTAATCGCTAGTCTGTATCGCAAGGGTAATCGCTAGTCTGGGGTAATCGCTAAGGTAGGCCGGGTGCTAAGGTAGGCCGGGTGGGGTAATCGGGCCGGGTGTATCGCAACTAGTCTGCTAAGGTACTAAGGTATATCGCAACTAGTCTGCTAAGGTACTAGTCTGGGCCGGGTGTATCGCAATATCGCAACTAAGGTATATCGCAATATCGCAATATCGCAACTAAGGTATATCGCAAGGGTAATCGCTAAGGTACTAAGGTACTAAGGTAGGGTAATCGTATCGCAACTAGTCTGTATCGCAAGGCCGGGTGTATCGCAATATCGCAAGGCCGGGTGCTAGTCTG'
     length   : 13
-    mers     : {
+    result   : {
       all: {
         AACTAAGGTACTA: 2
         AACTAAGGTAGGC: 2
@@ -870,7 +870,7 @@ module.exports = [
           'TATCGCAATATCG'
           'TCGCAACTAAGGT'
           'TCGCAATATCGCA'
-        ]
+        ].sort()
       }
     }
   }
@@ -878,7 +878,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : 'ACGTTGCATGTCGCATGATGCATGAGAGCT'
     length   : 4
-    mers     : {
+    result   : {
       all: {
         ACGT: 1
         AGAG: 1
@@ -907,7 +907,7 @@ module.exports = [
         mers  : [
           'CATG'
           'GCAT'
-        ]
+        ].sort()
       }
     }
   }
@@ -915,7 +915,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : 'ACTG'
     length   : 1
-    mers     : {
+    result   : {
       all : {
         A : 1
         C : 1
@@ -929,7 +929,7 @@ module.exports = [
           'C',
           'G',
           'T'
-        ]
+        ].sort()
       }
     }
   }
@@ -937,7 +937,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : 'CGATATATCCATAG'
     length   : 3
-    mers     : {
+    result   : {
       all: {
         ATA: 3
         ATC: 1
@@ -961,7 +961,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : 'ACAACTATGCATACTATCGGGAACTATCCT'
     length   : 5
-    mers     : {
+    result   : {
       all: {
         AACTA: 2
         ACAAC: 1
@@ -1021,7 +1021,7 @@ module.exports = [
       GGC
     """
     length : 11
-    mers   : {
+    result : {
       all: {
         AAAAAAAGAGT: 1
         AAAAAAGAGTG: 1
@@ -1325,7 +1325,7 @@ module.exports = [
         mers: [
           'CAGATTTGACT'
           'GCTGACAAGGC'
-        ]
+        ].sort()
       }
     }
   }
@@ -1333,7 +1333,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : VibrioCholerae.oriC
     length   : 9
-    mers     : {
+    result   : {
       all: {
         ATCAATGAT: 1,
         TCAATGATC: 1,
@@ -1860,7 +1860,7 @@ module.exports = [
           'CTCTTGATC',
           'CTTGATCAT',
           'TCTTGATCA'
-        ]
+        ].sort()
       }
     }
   }
@@ -1868,7 +1868,7 @@ module.exports = [
     Type     : Bioi.Dna
     sequence : 'CGGAGGACTCTAGGTAACGCTTATCAGGTCCATAGGACATTCA'
     length   : 3
-    mers     : {
+    result   : {
       all: {
         CGG: 1,
         GGA: 3,

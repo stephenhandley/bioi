@@ -59,13 +59,72 @@
       };
     };
 
+    Sequence.hammingDistance = function(a, b) {
+      var distance, i, j, ref, ref1, x;
+      ref = (function() {
+        var j, len, ref, results;
+        ref = [a, b];
+        results = [];
+        for (j = 0, len = ref.length; j < len; j++) {
+          x = ref[j];
+          results.push(x.toString());
+        }
+        return results;
+      })(), a = ref[0], b = ref[1];
+      distance = 0;
+      for (i = j = 0, ref1 = a.length; 0 <= ref1 ? j < ref1 : j > ref1; i = 0 <= ref1 ? ++j : --j) {
+        if (!(a[i] === b[i])) {
+          distance += 1;
+        }
+      }
+      return distance;
+    };
+
+    Sequence.neighbors = function(args) {
+      var distance, j, k, l, len, len1, len2, letter, mer, neighbor, neighbors, ref, ref1, results, str, suffix, suffix_neighbors;
+      mer = args.mer, distance = args.distance;
+      if (distance === 0) {
+        return [mer];
+      } else if (mer.length === 1) {
+        ref = this.letters;
+        results = [];
+        for (j = 0, len = ref.length; j < len; j++) {
+          letter = ref[j];
+          results.push(letter);
+        }
+        return results;
+      } else {
+        neighbors = [];
+        suffix = mer.slice(1);
+        suffix_neighbors = this.neighbors({
+          mer: suffix,
+          distance: distance
+        });
+        for (k = 0, len1 = suffix_neighbors.length; k < len1; k++) {
+          str = suffix_neighbors[k];
+          if (this.hammingDistance(str, suffix) < distance) {
+            ref1 = this.letters;
+            for (l = 0, len2 = ref1.length; l < len2; l++) {
+              letter = ref1[l];
+              neighbor = "" + letter + str;
+              neighbors.push(neighbor);
+            }
+          } else {
+            neighbor = "" + mer[0] + str;
+            neighbors.push(neighbor);
+          }
+        }
+        return neighbors;
+      }
+    };
+
     Sequence.prototype.clumps = function(args) {
       var clumpIndex, clumps, converter, first_end, first_index, first_mer, first_start, first_window, freq_range, freqs, i, j, k, l, last, last_end, last_index, last_mer, last_start, len, len1, length, mer, ref, seq_length, times, window;
       window = args.window;
       times = args.times;
       length = args.length;
       clumps = [];
-      freq_range = this.frequencyRange({
+      freq_range = this._frequencyRange({
         length: args.length
       });
       clumpIndex = (function() {
@@ -123,7 +182,7 @@
       var converter, end, i, j, k, last, len, length, mer, num, ref, ref1, result, seq_length;
       length = args.length;
       result = [];
-      ref = this.frequencyRange(args);
+      ref = this._frequencyRange(args);
       for (j = 0, len = ref.length; j < len; j++) {
         i = ref[j];
         result[i] = 0;
@@ -138,17 +197,6 @@
         result[num] = result[num] + 1;
       }
       return result;
-    };
-
-    Sequence.prototype.frequencyRange = function(args) {
-      var j, length, letters, ref, results;
-      length = args.length;
-      letters = this.constructor.letters;
-      return (function() {
-        results = [];
-        for (var j = 0, ref = Math.pow(letters.length, length) - 1; 0 <= ref ? j <= ref : j >= ref; 0 <= ref ? j++ : j--){ results.push(j); }
-        return results;
-      }).apply(this);
     };
 
     Sequence.prototype.group = function(args) {
@@ -186,17 +234,7 @@
     };
 
     Sequence.prototype.hammingDistance = function(other) {
-      var distance, i, j, my_letter, other_letter, other_sequence, ref;
-      other_sequence = Type(other, this.constructor) ? other.sequence : other;
-      distance = 0;
-      for (i = j = 0, ref = this.sequence.length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-        my_letter = this.sequence[i];
-        other_letter = other_sequence[i];
-        if (!(my_letter === other_letter)) {
-          distance += 1;
-        }
-      }
-      return distance;
+      return this.constructor.hammingDistance(this, other);
     };
 
     Sequence.prototype.letterCounts = function() {
@@ -219,24 +257,56 @@
       return result;
     };
 
-    Sequence.prototype.mer = function(mer) {
-      var end, j, last_start, mer_length, ref, result, seq_length, start, subseq;
-      result = {
-        count: 0,
-        positions: []
-      };
+    Sequence.prototype._mer = function(args) {
+      var end, filter, j, last_start, mer, mer_length, positions, ref, seq_length, start, subseq;
+      mer = args.mer, filter = args.filter;
+      positions = [];
       seq_length = this.sequence.length;
       mer_length = mer.length;
       last_start = seq_length - mer_length;
       for (start = j = 0, ref = last_start; 0 <= ref ? j <= ref : j >= ref; start = 0 <= ref ? ++j : --j) {
         end = start + mer_length - 1;
         subseq = this.sequence.slice(start, +end + 1 || 9e9);
-        if (subseq === mer) {
-          result.count++;
-          result.positions.push(start);
+        if (filter(subseq)) {
+          positions.push(start);
         }
       }
-      return result;
+      return positions;
+    };
+
+    Sequence.prototype.mer = function(args) {
+      var mer;
+      mer = args.mer;
+      args.filter = function(subseq) {
+        return subseq === mer;
+      };
+      return this._mer(args);
+    };
+
+    Sequence.prototype.merApproximate = function(args) {
+      var distance, mer, mer_seq;
+      mer = args.mer, distance = args.distance;
+      mer_seq = new this.constructor({
+        sequence: mer
+      });
+      args.filter = function(subseq) {
+        return mer_seq.hammingDistance(subseq) <= distance;
+      };
+      return this._mer(args);
+    };
+
+    Sequence.prototype.merApproximateCount = function(args) {
+      return this.merApproximate(args).length;
+    };
+
+    Sequence.prototype._mersResultStructure = function() {
+      return {
+        max: {
+          count: 0,
+          mers: []
+        },
+        all: {}
+      };
     };
 
     Sequence.prototype.mers = function(args) {
@@ -253,13 +323,7 @@
         }
         counts[mer] += 1;
       }
-      result = {
-        max: {
-          count: 0,
-          mers: []
-        },
-        all: {}
-      };
+      result = this._mersResultStructure();
       for (mer in counts) {
         count = counts[mer];
         if (count > 0) {
@@ -275,39 +339,38 @@
           result.max.mers.push(mer);
         }
       }
-      result.max.mers.sort();
       return result;
     };
 
     Sequence.prototype.mers2 = function(args) {
-      var converter, freqs, frequent, i, j, len, length, max, mer, ref;
+      var converter, count, freqs, i, j, len, length, max, mer, ref, result;
       length = args.length;
-      frequent = [];
+      result = this._mersResultStructure();
       freqs = this.frequencyArray(args);
-      max = Math.max.apply(null, freqs);
       converter = this.constructor.converter(args);
-      ref = this.frequencyRange(args);
+      max = Math.max.apply(null, freqs);
+      ref = this._frequencyRange(args);
       for (j = 0, len = ref.length; j < len; j++) {
         i = ref[j];
-        if (freqs[i] === max) {
-          mer = converter.numToMer(i);
-          frequent.push(mer);
+        count = freqs[i];
+        mer = converter.numToMer(i);
+        if (count > 0) {
+          result.all[mer] = count;
+        }
+        if (count === result.max) {
+          result.max.mers.push(mer);
         }
       }
-      return {
-        count: max,
-        mers: frequent
-      };
+      result.max.count = max;
+      return result;
     };
 
     Sequence.prototype.mersSort = function(args) {
-      var converter, end, frequent, i, index, j, k, l, last, length, max, mer, new_count, num, ref, ref1, ref2, seq_length;
+      var converter, count, counts, end, i, index, indexes, j, k, l, last, length, max, mer, new_count, ref, ref1, ref2, result, seq_length;
       length = args.length;
-      frequent = {
-        index: [],
-        count: [],
-        patterns: []
-      };
+      result = this._mersResultStructure();
+      indexes = [];
+      counts = [];
       converter = this.constructor.converter(args);
       seq_length = this.sequence.length;
       last = seq_length - length;
@@ -315,31 +378,80 @@
         end = i + length;
         mer = this.sequence.slice(i, end);
         index = converter.merToNum(mer);
-        frequent.index[i] = index;
-        frequent.count[i] = 1;
+        indexes[i] = index;
+        counts[i] = 1;
       }
-      frequent.index.sort();
+      indexes.sort();
       max = 1;
       for (i = k = 1, ref1 = last; 1 <= ref1 ? k <= ref1 : k >= ref1; i = 1 <= ref1 ? ++k : --k) {
-        if (frequent.index[i] === frequent.index[i - 1]) {
-          new_count = frequent.count[i - 1] + 1;
-          frequent.count[i] = new_count;
+        if (indexes[i] === indexes[i - 1]) {
+          new_count = counts[i - 1] + 1;
+          counts[i] = new_count;
           if (new_count > max) {
             max = new_count;
           }
         }
       }
+      result.max.count = max;
       for (i = l = 0, ref2 = last; 0 <= ref2 ? l <= ref2 : l >= ref2; i = 0 <= ref2 ? ++l : --l) {
-        if (frequent.count[i] === max) {
-          num = frequent.index[i];
-          mer = converter.numToMer(num);
-          frequent.patterns.push(mer);
+        count = counts[i];
+        index = indexes[i];
+        mer = converter.numToMer(index);
+        result.all[mer] = count;
+        if (count === max) {
+          result.max.mers.push(mer);
         }
       }
-      return {
-        count: max,
-        mers: frequent.patterns.sort()
-      };
+      return result;
+    };
+
+    Sequence.prototype.mersApproximate = function(args) {
+      var converter, count, counts, distance, end, i, index, indexes, j, k, l, last_start, length, m, max, mer, mer_neighbors, neighbors, new_count, ref, ref1, ref2, ref3, result, seq_length, start;
+      length = args.length, distance = args.distance;
+      converter = this.constructor.converter(args);
+      result = this._mersResultStructure();
+      indexes = [];
+      counts = [];
+      neighbors = [];
+      seq_length = this.sequence.length;
+      last_start = seq_length - length;
+      for (start = j = 0, ref = last_start; 0 <= ref ? j <= ref : j >= ref; start = 0 <= ref ? ++j : --j) {
+        end = start + length;
+        mer = this.sequence.slice(start, end);
+        mer_neighbors = this.constructor.neighbors({
+          mer: mer,
+          distance: distance
+        });
+        neighbors = neighbors.concat(mer_neighbors);
+      }
+      for (i = k = 0, ref1 = neighbors.length; 0 <= ref1 ? k < ref1 : k > ref1; i = 0 <= ref1 ? ++k : --k) {
+        mer = neighbors[i];
+        index = converter.merToNum(mer);
+        indexes[i] = index;
+        counts[i] = 1;
+      }
+      indexes.sort();
+      max = 1;
+      for (i = l = 0, ref2 = indexes.length; 0 <= ref2 ? l < ref2 : l > ref2; i = 0 <= ref2 ? ++l : --l) {
+        if (indexes[i] === indexes[i + 1]) {
+          new_count = counts[i] + 1;
+          counts[i + 1] = new_count;
+          if (new_count > max) {
+            max = new_count;
+          }
+        }
+      }
+      result.max.count = max;
+      for (i = m = 0, ref3 = neighbors.length; 0 <= ref3 ? m < ref3 : m > ref3; i = 0 <= ref3 ? ++m : --m) {
+        count = counts[i];
+        index = indexes[i];
+        mer = converter.numToMer(index);
+        result.all[mer] = count;
+        if (count === max) {
+          result.max.mers.push(mer);
+        }
+      }
+      return result;
     };
 
     Sequence.prototype.print = function(args) {
@@ -352,6 +464,21 @@
           return group.join('');
         }).join(' ');
       }).join('\n');
+    };
+
+    Sequence.prototype.toString = function() {
+      return this.sequence;
+    };
+
+    Sequence.prototype._frequencyRange = function(args) {
+      var j, length, letters, ref, results;
+      length = args.length;
+      letters = this.constructor.letters;
+      return (function() {
+        results = [];
+        for (var j = 0, ref = Math.pow(letters.length, length) - 1; 0 <= ref ? j <= ref : j >= ref; 0 <= ref ? j++ : j--){ results.push(j); }
+        return results;
+      }).apply(this);
     };
 
     return Sequence;

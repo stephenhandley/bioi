@@ -45,6 +45,151 @@ module.exports = {
     }
 
 
+    '@neighbors' : {
+      'should return mers within <distance> of <pattern>' : ()->
+        tests = [
+          {
+            mer      : 'ACG'
+            distance : 1
+            result   : [
+              'AAG'
+              'ACA'
+              'ACC'
+              'ACG'
+              'ACT'
+              'AGG'
+              'ATG'
+              'CCG'
+              'GCG'
+              'TCG'
+            ]
+          }
+          {
+            mer      : 'AAA'
+            distance : 3
+            result   : [
+              'AAA'
+              'AAC'
+              'AAG'
+              'AAT'
+              'ACA'
+              'ACC'
+              'ACG'
+              'ACT'
+              'AGA'
+              'AGC'
+              'AGG'
+              'AGT'
+              'ATA'
+              'ATC'
+              'ATG'
+              'ATT'
+              'CAA'
+              'CAC'
+              'CAG'
+              'CAT'
+              'CCA'
+              'CCC'
+              'CCG'
+              'CCT'
+              'CGA'
+              'CGC'
+              'CGG'
+              'CGT'
+              'CTA'
+              'CTC'
+              'CTG'
+              'CTT'
+              'GAA'
+              'GAC'
+              'GAG'
+              'GAT'
+              'GCA'
+              'GCC'
+              'GCG'
+              'GCT'
+              'GGA'
+              'GGC'
+              'GGG'
+              'GGT'
+              'GTA'
+              'GTC'
+              'GTG'
+              'GTT'
+              'TAA'
+              'TAC'
+              'TAG'
+              'TAT'
+              'TCA'
+              'TCC'
+              'TCG'
+              'TCT'
+              'TGA'
+              'TGC'
+              'TGG'
+              'TGT'
+              'TTA'
+              'TTC'
+              'TTG'
+              'TTT'
+            ]
+          }
+          {
+            mer      : 'A'
+            distance : 1000
+            result   : ['A', 'C', 'G', 'T']
+          }
+          {
+            mer      : 'AA'
+            distance : 1
+            result   : [
+              'AA'
+              'AC'
+              'AG'
+              'AT'
+              'CA'
+              'GA'
+              'TA'
+            ]
+          }
+          {
+            mer      : 'AA'
+            distance : 2
+            result   : [
+              'AA'
+              'AC'
+              'AG'
+              'AT'
+              'CA'
+              'CC'
+              'CG'
+              'CT'
+              'GA'
+              'GC'
+              'GG'
+              'GT'
+              'TA'
+              'TC'
+              'TG'
+              'TT'
+            ]
+          }
+          {
+            mer      : 'AA'
+            distance : 0
+            result   : [
+              'AA'
+            ]
+          }
+        ]
+
+        for test in tests
+          neighbors = Bioi.Dna.neighbors(test).sort()
+          Assert.deepEqual(neighbors, test.result)
+
+    }
+
+
     'clumps' : {
       'should return mers matching specified args': ()->
         tests = [
@@ -54,7 +199,7 @@ module.exports = {
             window   : 25
             times    : 3
             length   : 4
-            clumps   : ['TGCA']
+            result   : ['TGCA']
           }
           {
             Type     : Bioi.Dna
@@ -62,7 +207,7 @@ module.exports = {
             window   : 500
             times    : 3
             length   : 9
-            clumps   : [
+            result   : [
               'AAAAACTGA',
               'AAACTCAAA',
               'AAATAAAAA',
@@ -195,7 +340,7 @@ module.exports = {
         for test in tests
           sequence = _construct(test)
           clumps   = sequence.clumps(test)
-          Assert.deepEqual(clumps, test.clumps)
+          Assert.deepEqual(clumps, test.result)
     }
 
 
@@ -206,32 +351,32 @@ module.exports = {
             Type     : Bioi.Dna
             sequence : 'ACGCGGCTCTGAAA'
             length   : 2
-            freqs    : [2, 1, 0, 0, 0, 0, 2, 2, 1, 2, 1, 0, 0, 1, 1, 0]
+            result   : [2, 1, 0, 0, 0, 0, 2, 2, 1, 2, 1, 0, 0, 1, 1, 0]
           }
           {
             Type     : Bioi.Dna
             sequence : 'AAAAC'
             length   : 2
-            freqs    : [3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            result   : [3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
           }
           {
             Type     : Bioi.Dna
             sequence : 'TTAAA'
             length   : 2
-            freqs    : [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1]
+            result   : [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1]
           }
           {
             Type     : Bioi.Dna
             sequence : 'AAA'
             length   : 2
-            freqs    : [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            result   : [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
           }
         ]
 
         for test in tests
           sequence = _construct(test)
           freqs    = sequence.frequencyArray(length: test.length)
-          Assert.deepEqual(freqs, test.freqs)
+          Assert.deepEqual(freqs, test.result)
     }
 
     'hammingDistance' : {
@@ -241,43 +386,43 @@ module.exports = {
               Type       : Bioi.Dna
               sequence_a : 'GGGCCGTTGGT'
               sequence_b : 'GGACCGTTGAC'
-              distance   : 3
+              result     : 3
             }
             {
               Type       : Bioi.Dna
               sequence_a : 'AAAA'
               sequence_b : 'TTTT'
-              distance   : 4
+              result     : 4
             }
             {
               Type       : Bioi.Dna
               sequence_a : 'ACGTACGT'
               sequence_b : 'TACGTACG'
-              distance   : 8
+              result     : 8
             }
             {
               Type       : Bioi.Dna
               sequence_a : 'ACGTACGT'
               sequence_b : 'CCCCCCCC'
-              distance   : 6
+              result     : 6
             }
             {
               Type       : Bioi.Dna
               sequence_a : 'ACGTACGT'
               sequence_b : 'TGCATGCA'
-              distance   : 8
+              result     : 8
             }
             {
               Type       : Bioi.Dna
               sequence_a : 'GATAGCAGCTTCTGAACTGGTTACCTGCCGTGAGTAAATTAAAATTTTATTGACTTAGGTCACTAAATACT'
               sequence_b : 'AATAGCAGCTTCTCAACTGGTTACCTCGTATGAGTAAATTAGGTCATTATTGACTCAGGTCACTAACGTCT'
-              distance   : 15
+              result     : 15
             }
             {
               Type       : Bioi.Dna
               sequence_a : 'AGAAACAGACCGCTATGTTCAACGATTTGTTTTATCTCGTCACCGGGATATTGCGGCCACTCATCGGTCAGTTGATTACGCAGGGCGTAAATCGCCAGAATCAGGCTG'
               sequence_b : 'AGAAACCCACCGCTAAAAACAACGATTTGCGTAGTCAGGTCACCGGGATATTGCGGCCACTAAGGCCTTGGATGATTACGCAGAACGTATTGACCCAGAATCAGGCTC'
-              distance   : 28
+              result     : 28
             }
           ]
 
@@ -291,7 +436,7 @@ module.exports = {
               sequence_a.hammingDistance(test.sequence_b)
               sequence_b.hammingDistance(test.sequence_a)
             ]
-              Assert.equal(distance, test.distance)
+              Assert.equal(distance, test.result)
     }
 
 
@@ -301,7 +446,7 @@ module.exports = {
           {
             Type     : Bioi.Dna
             sequence : 'ACTGAAATTCTGAGGCT'
-            counts   : {
+            result   : {
               A : 5
               C : 3
               T : 5
@@ -311,7 +456,7 @@ module.exports = {
           {
             Type     : Bioi.Dna
             sequence : 'TTTTTT'
-            counts   : {
+            result   : {
               A : 0
               C : 0
               T : 6
@@ -324,7 +469,7 @@ module.exports = {
               AGCTTTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATT
               AAAAAAAGAGTGTCTGATAGCAGC
             """
-            counts   : {
+            result   : {
               A: 20
               C: 12
               T: 21
@@ -336,120 +481,184 @@ module.exports = {
         for test in tests
           sequence = _construct(test)
           counts   = sequence.letterCounts()
-          Assert.deepEqual(counts, test.counts)
+          Assert.deepEqual(counts, test.result)
     }
 
     'mer': {
-      'should return count and positions of mer': ()->
+      'should return positions of mer': ()->
         tests = [
           {
             Type     : Bioi.Dna
             sequence : 'ACAACTATGCATACTATCGGGAACTATCCT'
             mer      : 'ACTAT'
-            result   : {
-              count     : 3,
-              positions : [ 3, 12, 22 ]
-            }
+            result   : [ 3, 12, 22 ]
           }
           {
             Type     : Bioi.Dna
             sequence : 'CGATATATCCATAG'
             mer      : 'ATA'
-            result   : {
-              count     : 3,
-              positions : [ 2, 4, 10 ]
-            }
+            result   : [ 2, 4, 10 ]
           }
           {
             Type     : Bioi.Dna
             sequence : 'ACTGTACGATGATGTGTGTCAAAG'
             mer      : 'TGT'
-            result   : {
-              count     : 4,
-              positions : [ 2, 12, 14, 16 ]
-            }
+            result   : [ 2, 12, 14, 16 ]
           }
           {
             Type     : Bioi.Dna
             sequence : 'GCGCG'
             mer      : 'GCG'
-            result   : {
-              count     : 2,
-              positions : [ 0, 2 ]
-            }
+            result   : [ 0, 2 ]
           }
           {
             Type     : Bioi.Dna
             sequence : 'ACGTACGTACGT'
             mer      : 'CG'
-            result   : {
-              count     : 3,
-              positions : [ 1, 5, 9 ]
-            }
+            result   : [ 1, 5, 9 ]
           }
           {
             Type     : Bioi.Dna
             sequence : 'AAAGAGTGTCTGATAGCAGCTTCTGAACTGGTTACCTGCCGTGAGTAAATTAAATTTTATTGACTTAGGTCACTAAATACTTTAACCAATATAGGCATAGCGCACAGACAGATAATAATTACAGAGTACACAACATCCAT'
             mer      : 'AAA'
-            result   : {
-              count     : 4,
-              positions : [ 0, 46, 51, 74 ]
-            }
+            result   : [ 0, 46, 51, 74 ]
           }
           {
             Type     : Bioi.Dna
             sequence : 'AGCGTGCCGAAATATGCCGCCAGACCTGCTGCGGTGGCCTCGCCGACTTCACGGATGCCAAGTGCATAGAGGAAGCGAGCAAAGGTGGTTTCTTTCGCTTTATCCAGCGCGTTAACCACGTTCTGTGCCGACTTT'
             mer      : 'TTT'
-            result   : {
-              count     : 4,
-              positions : [ 88, 92, 98, 132 ]
-            }
+            result   : [ 88, 92, 98, 132 ]
           }
           {
             Type     : Bioi.Dna
             sequence : 'GGACTTACTGACGTACG'
             mer      : 'ACT'
-            result   : {
-              count     : 2,
-              positions : [ 2, 6 ]
-            }
+            result   : [ 2, 6 ]
           }
           {
             Type     : Bioi.Dna
             sequence : 'ATCCGATCCCATGCCCATG'
             mer      : 'CC'
-            result   : {
-              count     : 5,
-              positions : [ 2, 7, 8, 13, 14 ]
-            }
+            result   : [ 2, 7, 8, 13, 14 ]
           }
           {
             Type     : Bioi.Dna
             sequence : 'CTGTTTTTGATCCATGATATGTTATCTCTCCGTCATCAGAAGAACAGTGACGGATCGCCCTCTCTCTTGGTCAGGCGACCGTTTGCCATAATGCCCATGCTTTCCAGCCAGCTCTCAAACTCCGGTGACTCGCGCAGGTTGAGTA'
             mer      : 'CTC'
-            result   : {
-              count     : 9,
-              positions : [ 25, 27, 59, 61, 63, 111, 113, 119, 128 ]
-            }
+            result   : [ 25, 27, 59, 61, 63, 111, 113, 119, 128 ]
           }
           {
             Type     : Bioi.Dna
             sequence : 'TAGGGTGTCATTGTAGGGTGAACGTTTAGGGTGCCTAGGGTGGACTTAGGGTGCTAGGGTGTAGGGTGTTAGGGTGTTTGGGGGTAGGGTGTAGGGTGCGTAGGGTGTAGGGTGCCGTGCTTAGGGTGCTAGGGTGACTAGGGTGGTAGGTGTATTAGGGTGATGAACTAGGGTGAGATTAGGGTGGCACGGACTAGGGTGCTGTAGGGTGTTAGGGTGTCACATAGGGTGTAGGGTGCTTAGGGTGATAACGTCCTAGGGTGAGTAGGGTGTATTTCCAAGTGCGGCAAATAGGGTGTAGGGTGGCTAGGGTGAACGTAGGGTGAGATAGGGTGTCACTTTAACTAGATAGGGTGTTAGGGTGCTTAGGGTGTAGGGTGTAGGGTGCTAGGGTGTAGGGTGTTAGGGTGGCCTCGTAGGGTGGGCTAGGGTGAATAGGGTGTAGGGTGGCTAGGGTGTTTAGGGTGTAGGGTGCTAGGGTGCTAGGGTGGTAGGGTGGACGTGATAGGGTGTAGTAGGGTGTTCTAGGGTGAAAGCTGCCTTAGGGTGCTTAGGGTGCGGGGTGTAGGGTGTAGGGTGTGCTAGGGTGAGATTCGTAGGGTGGTAGGGTGTAGGGTGAGTAGGGTGATAGGGTGTCGCAGCCGAACCTTTAGGGTGTAGGGTGAGTAGGGTGCTAGGGTGACTTGTAGGGTGTTGTTACGTAGGGTGTAGGGTGAATAGGGTGGAGTAGGGTGTTAGGGTGCTAGGGTGCTAGGGTGGTAGGGTGATAGGGTGTAGGGTGGTTATTCCTAGGGTGGTAGGGTGCTGCTTAGGGTGTTTTTAGGGTGAGCAGGTAGGGTGACGCTAGGGTGATAGGGTGAGCTAGGGTGTAGGGTGCACGCCTAGGGTGTTAGGGTGTAGGGTGGCGTAGGGTGCTAGGGTGGTAGGGTGCAATATAGGGTGTAGGGTGACAACCCCGCATAGGGTGCGGTCGCACTTATAGGGTGGGTAGGGTGCTCATAGGGTGTAGGGTGTAGGGTG'
             mer      : 'TAGGGTGTA'
-            result   : {
-              count     : 22,
-              positions : [
-                54, 84, 100, 224, 265, 291, 366, 373, 388, 435, 460, 505, 565,
-                604, 650, 701, 767, 862, 890, 935, 999, 1006
-              ]
-            }
+            result   : [ 54, 84, 100, 224, 265, 291, 366, 373, 388, 435, 460, 505, 565, 604, 650, 701, 767, 862, 890, 935, 999, 1006 ]
           }
         ]
 
         for test in tests
           sequence = _construct(test)
-          result   = sequence.mer(test.mer)
+          result   = sequence.mer(mer : test.mer)
           Assert.deepEqual(result, test.result)
+    }
+
+
+    'merApproximate' : {
+      'should find all approximate occurences of mer in a string' : ()->
+        tests = [
+          {
+            Type     : Bioi.Dna
+            sequence : 'CGCCCGAATCCAGAACGCATTCCCATATTTCGGGACCACTGGCCTCCACGGTACGGACGTCAATCAAAT'
+            mer      : 'ATTCTGGA'
+            distance : 3
+            result   : [6, 7, 26, 27]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'TTTTTTAAATTTTAAATTTTTT'
+            mer      : 'AAA'
+            distance : 2
+            result   : [4, 5, 6, 7, 8, 11, 12, 13, 14, 15]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'GAGCGCTGGGTTAACTCGCTACTTCCCGACGAGCGCTGTGGCGCAAATTGGCGATGAAACTGCAGAGAGAACTGGTCATCCAACTGAATTCTCCCCGCTATCGCATTTTGATGCGCGCCGCGTCGATT'
+            mer      : 'GAGCGCTGG'
+            distance : 2
+            result   : [0, 30, 66]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'CCAAATCCCCTCATGGCATGCATTCCCGCAGTATTTAATCCTTTCATTCTGCATATAAGTAGTGAAGGTATAGAAACCCGTTCAAGCCCGCAGCGGTAAAACCGAGAACCATGATGAATGCACGGCGATTGCGCCATAATCCAAACA'
+            mer      : 'AATCCTTTCA'
+            distance : 3
+            result   : [3, 36, 74, 137]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'CCGTCATCCGTCATCCTCGCCACGTTGGCATGCATTCCGTCATCCCGTCAGGCATACTTCTGCATATAAGTACAAACATCCGTCATGTCAAAGGGAGCCCGCAGCGGTAAAACCGAGAACCATGATGAATGCACGGCGATTGC'
+            mer      : 'CCGTCATCC'
+            distance : 3
+            result   : [0, 7, 36, 44, 48, 72, 79, 112]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'AAAAAA'
+            mer      : 'TTT'
+            distance : 3
+            result   : [0, 1, 2, 3]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'CCACCT'
+            mer      : 'CCA'
+            distance : 0
+            result   : [0]
+          }
+        ]
+
+        for test in tests
+          sequence = _construct(test)
+          result   = sequence.merApproximate(
+            mer      : test.mer
+            distance : test.distance
+          )
+          Assert.deepEqual(result, test.result)
+    }
+
+
+    'merApproximateCount' : {
+      'should return count of approximate mers': ()->
+        tests = [
+          {
+            Type     : Bioi.Dna
+            sequence : 'TTTAGAGCCTTCAGAGG'
+            mer      : 'GAGG'
+            distance : 2
+            result   : 4
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'AAA'
+            mer      : 'AA'
+            distance : 0
+            result   : 2
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'ATA'
+            mer      : 'ATA'
+            distance : 1
+            result   : 1
+          }
+        ]
+
+        for test in tests
+          sequence = _construct(test)
+          count    = sequence.merApproximateCount(
+            mer      : test.mer
+            distance : test.distance
+          )
+          Assert.equal(count, test.result)
     }
 
 
@@ -459,8 +668,119 @@ module.exports = {
 
         for test in tests
           sequence = _construct(test)
-          mers     = sequence.mers(length: test.length)
-          Assert.deepEqual(mers, test.mers)
+          result   = sequence.mers(length: test.length)
+          result.max.mers.sort()
+          Assert.deepEqual(result, test.result)
+    }
+
+
+    'mersApproximate' : {
+      'should return derp' : ()->
+        tests = [
+          {
+            Type     : Bioi.Dna
+            sequence : 'ACGTTGCATGTCGCATGATGCATGAGAGCT'
+            length   : 4
+            distance : 1
+            result   : [
+              'GATG',
+              'ATGC',
+              'ATGT',
+            ]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'AAAAAAAAAA'
+            length   : 2
+            distance : 1
+            result   : [
+              'AA'
+              'AC'
+              'TA'
+              'AG'
+              'AT'
+              'CA'
+              'GA'
+            ]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'AGTCAGTC'
+            length   : 4
+            distance : 2
+            result   : [
+              'TCTC'
+              'CGGC'
+              'AAGC'
+              'TGTG'
+              'GGCC'
+              'AGGT'
+              'ATCC'
+              'ACTG'
+              'ACAC'
+              'AGAG'
+              'ATTA'
+              'TGAC'
+              'AATT'
+              'CGTT'
+              'GTTC'
+              'GGTA'
+              'AGCA'
+              'CATC'
+            ]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'AATTAATTGGTAGGTAGGTA'
+            length   : 4
+            distance : 0
+            result   : [
+              'GGTA'
+            ]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'ATA'
+            length   : 3
+            distance : 1
+            result   : [
+              'GTA'
+              'ACA'
+              'AAA'
+              'ATC'
+              'ATA'
+              'AGA'
+              'ATT'
+              'CTA'
+              'TTA'
+              'ATG'
+            ]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'AAT'
+            length   : 3
+            distance : 0
+            result   : [
+              'AAT'
+            ]
+          }
+          {
+            Type     : Bioi.Dna
+            sequence : 'TAGCG'
+            length   : 2
+            distance : 1
+            result   : [
+              'GG'
+              'TG'
+            ]
+          }
+        ]
+
+        for test in tests
+          sequence = _construct(test)
+          result   = sequence.mersApproximate(test)
+          Assert.deepEqual(result.max.mers.sort(), test.result.sort())
     }
 
 
@@ -471,7 +791,10 @@ module.exports = {
         for test in tests
           sequence = _construct(test)
           result   = sequence.mersSort(length: test.length)
-          Assert.deepEqual(result, test.mers.max)
+          # sort the arrays so deepEqual works
+          result.max.mers.sort()
+          test.result.max.mers.sort()
+          Assert.deepEqual(result, test.result)
     }
 
 
@@ -481,7 +804,7 @@ module.exports = {
           {
             Type     : Bioi.Dna
             sequence : VibrioCholerae.oriC
-            printed  : [
+            result   : [
               'ATCAATGA TCAACGTA AGCTTCTA AGCATGAT CAAGGTGC TCACACAG TTTATCCA CAACCTGA',
               'GTGGATGA CATCAAGA TAGGTCGT TGTATCTC CTTCCTCT CGTACTCT CATGACCA CGGAAAGA',
               'TGATCAAG AGAGGATG ATTTCTTG GCCATATC GCAATGAA TACTTGTG ACTTGTGC TTCCAATT',
@@ -496,7 +819,7 @@ module.exports = {
           {
             Type     : Bioi.Dna
             sequence : 'AGCTTCAGTTTCCDTATTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATTAAAAAAGCGCGCGCGCTA'
-            printed  : """
+            result   : """
               AGCTTCAG TTTCCDTA TTTCATTC TGACTGCA ACGGGCAA TATGTCTC TGTGTGGA TTAAAAAA
               GCGCGCGC GCTA
             """
@@ -506,7 +829,7 @@ module.exports = {
         for test in tests
           sequence = _construct(test)
           printed = sequence.print()
-          Assert.equal(printed, test.printed)
+          Assert.equal(printed, test.result)
     }
   }
 }

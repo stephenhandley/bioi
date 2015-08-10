@@ -118,6 +118,46 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
         result
     }
 
+
+  <span class="hljs-property">@hammingDistance</span> : <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
+    [a, b] = (x.toString() <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> [a, b])
+
+    distance = <span class="hljs-number">0</span>
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> ... a.length]
+      <span class="hljs-keyword">unless</span> (a[i] <span class="hljs-keyword">is</span> b[i])
+        distance += <span class="hljs-number">1</span>
+
+    distance
+
+
+  <span class="hljs-property">@neighbors</span> : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    {mer, distance} = args
+
+    <span class="hljs-keyword">if</span> (distance <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>)
+      [mer]
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (mer.length <span class="hljs-keyword">is</span> <span class="hljs-number">1</span>)
+      letter <span class="hljs-keyword">for</span> letter <span class="hljs-keyword">in</span> <span class="hljs-property">@letters</span>
+    <span class="hljs-keyword">else</span>
+      neighbors        = []
+      suffix           = mer[<span class="hljs-number">1</span> .. -<span class="hljs-number">1</span>]
+      suffix_neighbors = <span class="hljs-property">@neighbors</span>(
+        mer      : suffix
+        distance : distance
+      )
+
+      <span class="hljs-keyword">for</span> str <span class="hljs-keyword">in</span> suffix_neighbors
+        <span class="hljs-keyword">if</span> (<span class="hljs-property">@hammingDistance</span>(str, suffix) &lt; distance)
+          <span class="hljs-keyword">for</span> letter <span class="hljs-keyword">in</span> <span class="hljs-property">@letters</span>
+            neighbor = <span class="hljs-string">"<span class="hljs-subst">#{letter}</span><span class="hljs-subst">#{str}</span>"</span>
+            neighbors.push(neighbor)
+        <span class="hljs-keyword">else</span>
+          neighbor = <span class="hljs-string">"<span class="hljs-subst">#{mer[<span class="hljs-number">0</span>]}</span><span class="hljs-subst">#{str}</span>"</span>
+          neighbors.push(neighbor)
+
+      neighbors
+
+
   clumps : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
     <span class="hljs-built_in">window</span> = args.<span class="hljs-built_in">window</span> <span class="hljs-comment"># window size to look for clumps in, "L"</span>
     times  = args.times  <span class="hljs-comment"># minimum number of clump occurences, "t"</span>
@@ -125,7 +165,7 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
 
     clumps = []
 
-    freq_range = <span class="hljs-property">@frequencyRange</span>(length : args.length)
+    freq_range = <span class="hljs-property">@_frequencyRange</span>(length : args.length)
 
     clumpIndex = (<span class="hljs-number">0</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> freq_range)
 
@@ -168,7 +208,7 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
     {length} = args
 
     result = []
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@frequencyRange</span>(args)
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@_frequencyRange</span>(args)
       result[i] = <span class="hljs-number">0</span>
 
     converter = <span class="hljs-property">@constructor</span>.converter(args)
@@ -186,15 +226,10 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
     result
 
 
-  frequencyRange : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
-    {length} = args
-    letters = <span class="hljs-property">@constructor</span>.letters
-    [<span class="hljs-number">0</span> .. (Math.pow(letters.length, length) - <span class="hljs-number">1</span>)]
-
-
   group : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
     {dims} = args
-<span class="hljs-function">    <span class="hljs-title">combine</span> = <span class="hljs-params">(args)</span>-&gt;</span>
+<span class="hljs-function">
+    <span class="hljs-title">combine</span> = <span class="hljs-params">(args)</span>-&gt;</span>
       {depth, input} = args
 
       size = dims[depth]
@@ -228,20 +263,7 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
 
 
   hammingDistance : <span class="hljs-function"><span class="hljs-params">(other)</span>-&gt;</span>
-    other_sequence = <span class="hljs-keyword">if</span> Type(other, <span class="hljs-property">@constructor</span>)
-      other.sequence
-    <span class="hljs-keyword">else</span>
-      other
-
-    distance = <span class="hljs-number">0</span>
-
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> ... <span class="hljs-property">@sequence</span>.length]
-      my_letter    = <span class="hljs-property">@sequence</span>[i]
-      other_letter = other_sequence[i]
-      <span class="hljs-keyword">unless</span> (my_letter <span class="hljs-keyword">is</span> other_letter)
-        distance += <span class="hljs-number">1</span>
-
-    distance
+    <span class="hljs-property">@constructor</span>.hammingDistance(@, other)
 
 
   letterCounts : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
@@ -260,11 +282,10 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
     result
 
 
-  mer : <span class="hljs-function"><span class="hljs-params">(mer)</span>-&gt;</span>
-    result = {
-      count     : <span class="hljs-number">0</span>
-      positions : []
-    }
+  _mer : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    {mer, filter} = args
+
+    positions = []
 
     seq_length = <span class="hljs-property">@sequence</span>.length
     mer_length = mer.length
@@ -273,12 +294,42 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
     <span class="hljs-keyword">for</span> start <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> .. last_start]
       end = start + mer_length - <span class="hljs-number">1</span>
       subseq = <span class="hljs-property">@sequence</span>[start .. end]
-      <span class="hljs-keyword">if</span> (subseq <span class="hljs-keyword">is</span> mer)
-        result.count++
-        result.positions.push(start)
+      <span class="hljs-keyword">if</span> filter(subseq)
+        positions.push(start)
 
-    result
+    positions
 
+
+  mer : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    {mer} = args
+
+    args.filter = <span class="hljs-function"><span class="hljs-params">(subseq)</span>-&gt;</span>
+      (subseq <span class="hljs-keyword">is</span> mer)
+
+    <span class="hljs-property">@_mer</span>(args)
+
+
+  merApproximate : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    {mer, distance} = args
+    mer_seq = <span class="hljs-keyword">new</span> <span class="hljs-property">@constructor</span>(sequence : mer)
+
+    args.filter = <span class="hljs-function"><span class="hljs-params">(subseq)</span>-&gt;</span>
+      (mer_seq.hammingDistance(subseq) &lt;= distance)
+
+    <span class="hljs-property">@_mer</span>(args)
+
+
+  merApproximateCount : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    <span class="hljs-property">@merApproximate</span>(args).length
+
+  _mersResultStructure : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
+     {
+      max : {      <span class="hljs-comment"># most frequently occurring mers</span>
+        count : <span class="hljs-number">0</span>
+        mers  : []
+      }
+      all : {}     <span class="hljs-comment"># counts keyed by mer</span>
+    }
 
   mers : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
     {length} = args <span class="hljs-comment"># mer length to look for, "k"</span>
@@ -294,13 +345,7 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
         counts[mer] = <span class="hljs-number">0</span>
       counts[mer] += <span class="hljs-number">1</span>
 
-    result = {
-      max : {      <span class="hljs-comment"># most frequently occurring mers</span>
-        count : <span class="hljs-number">0</span>
-        mers  : []
-      }
-      all : {}     <span class="hljs-comment"># counts keyed by mer</span>
-    }
+    result = <span class="hljs-property">@_mersResultStructure</span>()
 
     <span class="hljs-keyword">for</span> mer, count <span class="hljs-keyword">of</span> counts
       <span class="hljs-keyword">if</span> (count &gt; <span class="hljs-number">0</span>)
@@ -316,7 +361,6 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
       <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (count <span class="hljs-keyword">is</span> max)
         result.max.mers.push(mer)
 
-    result.max.mers.sort()
     result</pre></div></div>
             
         </li>
@@ -335,20 +379,24 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
             <div class="content"><div class='highlight'><pre>  mers2 : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
     {length} = args
 
-    frequent  = []
+    result = <span class="hljs-property">@_mersResultStructure</span>()
+
     freqs     = <span class="hljs-property">@frequencyArray</span>(args)
-    max       = Math.max.apply(<span class="hljs-literal">null</span>, freqs)
     converter = <span class="hljs-property">@constructor</span>.converter(args)
+    max       = Math.max.apply(<span class="hljs-literal">null</span>, freqs)
 
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@frequencyRange</span>(args)
-      <span class="hljs-keyword">if</span> (freqs[i] <span class="hljs-keyword">is</span> max)
-        mer = converter.numToMer(i)
-        frequent.push(mer)
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@_frequencyRange</span>(args)
+      count = freqs[i]
+      mer   = converter.numToMer(i)
 
-    {
-      count : max
-      mers  : frequent
-    }</pre></div></div>
+      <span class="hljs-keyword">if</span> (count &gt; <span class="hljs-number">0</span>)
+        result.all[mer] = count
+
+      <span class="hljs-keyword">if</span> (count <span class="hljs-keyword">is</span> result.max)
+        result.max.mers.push(mer)
+
+    result.max.count = max
+    result</pre></div></div>
             
         </li>
         
@@ -366,11 +414,9 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
             <div class="content"><div class='highlight'><pre>  mersSort : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
     {length} = args <span class="hljs-comment"># mer length to look for, "k"</span>
 
-    frequent = {
-      index    : []
-      count    : []
-      patterns : []
-    }
+    result  = <span class="hljs-property">@_mersResultStructure</span>()
+    indexes = []
+    counts  = []
 
     converter = <span class="hljs-property">@constructor</span>.converter(args)
 
@@ -381,29 +427,88 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
       end = i + length
       mer = <span class="hljs-property">@sequence</span>[i ... end]
       index = converter.merToNum(mer)
-      frequent.index[i] = index
-      frequent.count[i] = <span class="hljs-number">1</span>
+      indexes[i] = index
+      counts[i]  = <span class="hljs-number">1</span>
 
-    frequent.index.sort()
+    indexes.sort()
 
     max = <span class="hljs-number">1</span>
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">1</span> .. last]
-      <span class="hljs-keyword">if</span> (frequent.index[i] <span class="hljs-keyword">is</span> frequent.index[i - <span class="hljs-number">1</span>])
-        new_count = frequent.count[i - <span class="hljs-number">1</span>] + <span class="hljs-number">1</span>
-        frequent.count[i] = new_count
+      <span class="hljs-keyword">if</span> (indexes[i] <span class="hljs-keyword">is</span> indexes[i - <span class="hljs-number">1</span>])
+        new_count = counts[i - <span class="hljs-number">1</span>] + <span class="hljs-number">1</span>
+        counts[i] = new_count
         <span class="hljs-keyword">if</span> (new_count &gt; max)
           max = new_count
 
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> .. last]
-      <span class="hljs-keyword">if</span> (frequent.count[i] <span class="hljs-keyword">is</span> max)
-        num = frequent.index[i]
-        mer = converter.numToMer(num)
-        frequent.patterns.push(mer)
+    result.max.count = max
 
-    {
-      count : max
-      mers  : frequent.patterns.sort()
-    }
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> .. last]
+      count = counts[i]
+      index = indexes[i]
+      mer   = converter.numToMer(index)
+
+      result.all[mer] = count
+
+      <span class="hljs-keyword">if</span> (count <span class="hljs-keyword">is</span> max)
+        result.max.mers.push(mer)
+
+    result
+
+
+  mersApproximate : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    {length, distance} = args
+
+    converter = <span class="hljs-property">@constructor</span>.converter(args)
+
+    result    = <span class="hljs-property">@_mersResultStructure</span>()
+    indexes   = []
+    counts    = []
+    neighbors = []
+
+    seq_length = <span class="hljs-property">@sequence</span>.length
+    last_start = seq_length - length
+
+    <span class="hljs-keyword">for</span> start <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> .. last_start]
+      end = start + length
+      mer = <span class="hljs-property">@sequence</span>[start ... end]
+
+      mer_neighbors = <span class="hljs-property">@constructor</span>.neighbors(
+        mer      : mer
+        distance : distance
+      )
+
+      neighbors = neighbors.concat(mer_neighbors)
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> ... neighbors.length]
+      mer        = neighbors[i]
+      index      = converter.merToNum(mer)
+      indexes[i] = index
+      counts[i]  = <span class="hljs-number">1</span>
+
+    indexes.sort()
+
+    max = <span class="hljs-number">1</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> ... indexes.length]
+      <span class="hljs-keyword">if</span> (indexes[i] <span class="hljs-keyword">is</span> indexes[i + <span class="hljs-number">1</span>])
+        new_count     = counts[i] + <span class="hljs-number">1</span>
+        counts[i + <span class="hljs-number">1</span>] = new_count
+
+        <span class="hljs-keyword">if</span> (new_count &gt; max)
+          max = new_count
+
+    result.max.count = max
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0</span> ... neighbors.length]
+      count = counts[i]
+      index = indexes[i]
+      mer   = converter.numToMer(index)
+
+      result.all[mer] = count
+
+      <span class="hljs-keyword">if</span> (count <span class="hljs-keyword">is</span> max)
+        result.max.mers.push(mer)
+
+    result
 
 
   <span class="hljs-built_in">print</span> : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
@@ -414,6 +519,15 @@ Type       = <span class="hljs-built_in">require</span>(<span class="hljs-string
       ).join(<span class="hljs-string">' '</span>)
     ).join(<span class="hljs-string">'\n'</span>)
 
+
+  toString : <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
+    <span class="hljs-property">@sequence</span>
+
+
+  _frequencyRange : <span class="hljs-function"><span class="hljs-params">(args)</span>-&gt;</span>
+    {length} = args
+    letters = <span class="hljs-property">@constructor</span>.letters
+    [<span class="hljs-number">0</span> .. (Math.pow(letters.length, length) - <span class="hljs-number">1</span>)]
 
 <span class="hljs-built_in">module</span>.exports = Sequence</pre></div></div>
             
