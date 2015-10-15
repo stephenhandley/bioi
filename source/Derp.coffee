@@ -12,6 +12,7 @@
 # • Prd(N, A, k, t), the probability that there exists any k-mer with at least t approxi- mate occurrences in a random string (with at most d mismatches).
 # ```
 
+BigInteger = require('big-integer')
 
 # NONE OF THIS STUFF WORKS PROPERLY YET
 
@@ -39,15 +40,20 @@ nChooseK = (args)->
   factorial(n) / (factorial(k) * factorial(n - k))
 
 factorial = (()->
-  memo = []
+  memo = new Map()
 
   f = (n)->
-    if (n <= 1)
-      1
-    else if (typeof memo[n] isnt 'undefined')
-      memo[n]
+    unless BigInteger.isInstance(n)
+      n = BigInteger(n)
+
+    if (n.lesserOrEquals(1))
+      n
+    else if memo.has(n)
+      memo.get(n)
     else
-      f[n] = f(n-1) * n
+      value = f(n.subtract(1)).multiply(n)
+      memo.set(n, value)
+      value
 )()
 
 module.exports = {
@@ -84,4 +90,6 @@ module.exports = {
     total = Math.pow(alphabet_size, times * pattern.length)
 
     count / total
+
+  nk: nChooseK
 }

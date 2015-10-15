@@ -1,5 +1,7 @@
 (function() {
-  var ALPHABET, enumeratePatterns, factorial, nChooseK;
+  var ALPHABET, BigInteger, enumeratePatterns, factorial, nChooseK;
+
+  BigInteger = require('big-integer');
 
   ALPHABET = '012345679ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -35,14 +37,20 @@
 
   factorial = (function() {
     var f, memo;
-    memo = [];
+    memo = new Map();
     return f = function(n) {
-      if (n <= 1) {
-        return 1;
-      } else if (typeof memo[n] !== 'undefined') {
-        return memo[n];
+      var value;
+      if (!BigInteger.isInstance(n)) {
+        n = BigInteger(n);
+      }
+      if (n.lesserOrEquals(1)) {
+        return n;
+      } else if (memo.has(n)) {
+        return memo.get(n);
       } else {
-        return f[n] = f(n - 1) * n;
+        value = f(n.subtract(1)).multiply(n);
+        memo.set(n, value);
+        return value;
       }
     };
   })();
@@ -81,7 +89,8 @@
       });
       total = Math.pow(alphabet_size, times * pattern.length);
       return count / total;
-    }
+    },
+    nk: nChooseK
   };
 
 }).call(this);

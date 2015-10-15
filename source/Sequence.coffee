@@ -13,6 +13,9 @@ class Sequence
       {}
 
 
+  @consensus : ()->
+
+
   @converter : (args)->
     {length} = args
     letters  = @letters

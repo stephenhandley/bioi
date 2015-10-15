@@ -39,6 +39,11 @@
               </a>
             
               
+              <a class="source" href="Scoring.html">
+                Scoring.coffee
+              </a>
+            
+              
               <a class="source" href="Sequence.html">
                 Sequence.coffee
               </a>
@@ -76,6 +81,9 @@ Note that the above two probabilities are relatively straightforward to compute.
 • Prd(N, A, k, t), the probability that there exists any k-mer <span class="hljs-reserved">with</span> at least t approxi- mate occurrences <span class="hljs-keyword">in</span> a random string (<span class="hljs-reserved">with</span> at most d mismatches).
 </code></pre>
             </div>
+            
+            <div class="content"><div class='highlight'><pre>
+BigInteger = <span class="hljs-built_in">require</span>(<span class="hljs-string">'big-integer'</span>)</pre></div></div>
             
         </li>
         
@@ -127,15 +135,20 @@ ALPHABET = <span class="hljs-string">'012345679ABCDEFGHIJKLMNOPQRSTUVWXYZ'</span
   factorial(n) / (factorial(k) * factorial(n - k))
 <span class="hljs-function">
 <span class="hljs-title">factorial</span> = (<span class="hljs-params">()</span>-&gt;</span>
-  memo = []
+  memo = <span class="hljs-keyword">new</span> Map()
 <span class="hljs-function">
   <span class="hljs-title">f</span> = <span class="hljs-params">(n)</span>-&gt;</span>
-    <span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">1</span>)
-      <span class="hljs-number">1</span>
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> memo[n] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'undefined'</span>)
-      memo[n]
+    <span class="hljs-keyword">unless</span> BigInteger.isInstance(n)
+      n = BigInteger(n)
+
+    <span class="hljs-keyword">if</span> (n.lesserOrEquals(<span class="hljs-number">1</span>))
+      n
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> memo.has(n)
+      memo.get(n)
     <span class="hljs-keyword">else</span>
-      f[n] = f(n-<span class="hljs-number">1</span>) * n
+      value = f(n.subtract(<span class="hljs-number">1</span>)).multiply(n)
+      memo.set(n, value)
+      value
 )()
 
 <span class="hljs-built_in">module</span>.exports = {
@@ -172,6 +185,8 @@ ALPHABET = <span class="hljs-string">'012345679ABCDEFGHIJKLMNOPQRSTUVWXYZ'</span
     total = Math.pow(alphabet_size, times * pattern.length)
 
     count / total
+
+  <span class="hljs-attribute">nk</span>: nChooseK
 }</pre></div></div>
             
         </li>

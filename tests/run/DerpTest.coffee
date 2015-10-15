@@ -52,7 +52,6 @@ module.exports = {
         pattern       : "01303"
         times         : 3
       )
-      console.log(approx)
   }
 }
 

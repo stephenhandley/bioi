@@ -1,7 +1,10 @@
 (function() {
   module.exports = {
     Dna: require('./Dna'),
-    Protein: require('./Protein')
+    Protein: require('./Protein'),
+    Derp: require('./Derp'),
+    Sequence: require('./Sequence'),
+    Scoring: require('./Scoring')
   };
 
 }).call(this);

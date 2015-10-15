@@ -16,6 +16,8 @@
       this.meta = 'meta' in args ? args.meta : {};
     }
 
+    Sequence.consensus = function() {};
+
     Sequence.converter = function(args) {
       var length, letters;
       length = args.length;
